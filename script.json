@@ -1,0 +1,164 @@
+{
+  "title": "2026-01-19 EEG論文まとめ",
+  "dialogue": [
+    {
+      "speaker": "ずんだもん",
+      "text": "2026-01-19なのだ、今日のEEG論文まとめを始めるぞ！"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "本日は、最新のEEG研究を4つ紹介します。まずは第1論文です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "個人差が大事なのか、うーん。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "第1論文は、高齢者の脳でガンマ波を向上させるEEGフィードバックの個別動態を調べたものです。目的は、老化した脳でも効果的な神経調整が可能かを検証することでした。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "ガンマ波って、何か特別な意味があるの？"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "はい、ガンマ波は注意力や情報統合に関与するとされます。研究者は、個々の脳パターンを解析し、フィードバックが最適化できるかどうかを測定しました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "結果は？ 何が見つかったのかよくわからない。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "結果として、個人差が大きく、特定のパターンに合わせたフィードバックがガンマ波を有意に増加させることが確認されました。これは、パーソナライズドな神経治療の可能性を示唆しています。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "個別にカスタマイズするって、ちょっと高価そうだね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "確かにコストは課題ですが、遠隔モニタリング技術が進むことで実用化への道は開けるでしょう。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "次の論文は？ 何か面白いことあるかな。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "第2論文は、ワイヤレス乾式EEGヘッドセットで取得した視覚誘発電位（VEP）の経験依存性可塑性を短時間で評価する方法です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "ワイヤレスヘッドセット？ これって便利そう！"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "はい、臨床現場での導入が容易になると期待されています。研究では、短時間でVEPを測定し、学習やリハビリ効果をリアルタイムでモニタリングできることが示されました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "リアルタイムで効果がわかると、治療の調整も楽になるね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "そうです。また、乾式センサーは装着時間が短く、患者の負担も軽減されます。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "第三の論文は… 何か怖い話かな？"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "第3論文は、外傷後に脳萎縮を呈し、水頭症を疑わせるケースで、実は散発性クロイツフェルト・ヤコブ病（sCJD）であったという症例報告です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "CJDって、まさかの急速進行性疾患だね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "はい、通常は1年以内に死亡する重篤な疾患です。研究者は、最新の画像診断と病理学的検査を組み合わせて正確な診断を行い、他疾患との鑑別の重要性を強調しています。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "外傷とCJDが混同されるのは危険だね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "その通りです。早期診断と適切な治療法の模索が今後の課題です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "最後に第4論文は？ 何か技術的なものかな。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "第4論文は、脳のトップオロジーを学習する階層的局所-全体グラフ変換ネットワーク（Neuro-HGLN）を用いてEEGから感情認識を行う手法です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "グラフ変換ネットワーク？ なんか未来的な響きだね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "はい、脳の局所的な接続と全体的な依存関係を同時に捉えることで、従来の深層学習よりも高精度な感情解析が可能になりました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "これで人の心を読む技術が進むと、AIに好かれやすくなるかもね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "感情認識は医療や人間工学、エンターテインメント分野で広く応用が期待されています。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "まとめると、高齢者向けの個別フィードバック、ワイヤレスでリアルタイム評価、外傷とCJDの鑑別、そして感情解析まで… すごいぞ！"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "はい、EEG研究は多岐にわたり、臨床応用からAIまで幅広い分野で進展しています。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "次回はもっと面白い研究を探してくるよ。では、またね！"
+    }
+  ],
+  "references": [
+    {
+      "title": "Individual neural dynamics of successful Gamma neuromodulation through EEG-neurofeedback in the aging brain",
+      "authors": "Houmani N.",
+      "url": "https://doi.org/10.1038/s41598-025-30212-0",
+      "doi": "10.1038/s41598-025-30212-0",
+      "source": "Scopus",
+      "published": "2026-12-01"
+    },
+    {
+      "title": "A brief visual evoked potential (VEP) modulation assessment of experience-dependent plasticity recorded via wireless dry-EEG headset in Phase 1 clinical units",
+      "authors": "McWilliams E.C.",
+      "url": "https://doi.org/10.1038/s41598-025-29950-y",
+      "doi": "10.1038/s41598-025-29950-y",
+      "source": "Scopus",
+      "published": "2026-12-01"
+    },
+    {
+      "title": "Sporadic Creutzfeldt Jakob disease presenting with cerebral atrophy following traumatic brain injury mimicking hydrocephalus a case report and literature review",
+      "authors": "Chun Zeng, Dezhu Gao, Liang Wu",
+      "url": "https://arxiv.org/abs/2601.10663v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-15T18:31:29Z"
+    },
+    {
+      "title": "Learning from Brain Topography: A Hierarchical Local-Global Graph-Transformer Network for EEG Emotion Recognition",
+      "authors": "Yijin Zhou, Fu Li, Yi Niu, Boxun Fu, Huaning Wang, Lijian Zhang",
+      "url": "https://arxiv.org/abs/2601.10525v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-15T15:52:05Z"
+    }
+  ],
+  "date": "2026-01-19"
+}

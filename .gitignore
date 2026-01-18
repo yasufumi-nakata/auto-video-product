@@ -1,0 +1,24 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Mac
+.DS_Store
+
+# Output files
+*.mp4
+*.wav
+*.png
+*.jpg
+output/
+
+# YouTube API credentials
+client_secret.json
+token.json
