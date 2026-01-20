@@ -83,8 +83,8 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
                         text_align='center'
                     )
 
-                    # 位置と時間を設定
-                    txt_clip = txt_clip.with_position(('center', 550))
+                    # 位置と時間を設定（画面中央に中心揃え）
+                    txt_clip = txt_clip.with_position('center')
                     txt_clip = txt_clip.with_start(start_time)
                     txt_clip = txt_clip.with_duration(clip_duration)
 

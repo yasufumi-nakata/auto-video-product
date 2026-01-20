@@ -1,147 +1,111 @@
 {
-  "title": "2026-01-19 EEG論文まとめ",
+  "title": "2026-01-20 EEG論文まとめ",
   "dialogue": [
     {
       "speaker": "ずんだもん",
-      "text": "2026-01-19なのだ、今日のEEG論文まとめを始めるぞ！"
+      "text": "今日は2026年1月20日、EEG論文まとめなのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "本日は、最新のEEG研究を4つ紹介します。まずは第1論文です。"
+      "text": "本日は、脳波解析に関する最新研究を順番にご紹介いたします。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "個人差が大事なのか、うーん。"
+      "text": "まずは『Simple Models, Rich Representations』！なんだかシンプルだけど、何がすごいの？"
     },
     {
       "speaker": "四国めたん",
-      "text": "第1論文は、高齢者の脳でガンマ波を向上させるEEGフィードバックの個別動態を調べたものです。目的は、老化した脳でも効果的な神経調整が可能かを検証することでした。"
+      "text": "この研究は、霊長類の皮質内高密度記録から視覚情報をデコードする方法を検証しています。主な発見は、モデル構造よりも時間的ダイナミクスを捉えることが精度向上に大きく寄与するという点です。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "ガンマ波って、何か特別な意味があるの？"
+      "text": "時間を意識するって、脳はタイムラインだね！次はうつ病検出の話。"
     },
     {
       "speaker": "四国めたん",
-      "text": "はい、ガンマ波は注意力や情報統合に関与するとされます。研究者は、個々の脳パターンを解析し、フィードバックが最適化できるかどうかを測定しました。"
+      "text": "『Depression Detection Based on Electroencephalography』では、CNN-GRUとMRMR特徴選択を組み合わせてうつ状態を判定しています。結果は、従来の自己申告法よりも客観的に高い精度を示し、早期診断の可能性が示唆されました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "結果は？ 何が見つかったのかよくわからない。"
+      "text": "うつ病って、頭の中で暗い雲が漂ってるんだね。"
     },
     {
       "speaker": "四国めたん",
-      "text": "結果として、個人差が大きく、特定のパターンに合わせたフィードバックがガンマ波を有意に増加させることが確認されました。これは、パーソナライズドな神経治療の可能性を示唆しています。"
+      "text": "次はクリッツフェルト・ヤコブ病のケースレポート。トラウマ後に脳萎縮が起き、ヒドロセファローズと誤診されるケースを報告しています。放射線学的所見が診断の鍵になると指摘されています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "個別にカスタマイズするって、ちょっと高価そうだね。"
+      "text": "まるで脳の中に迷路ができたみたいだね！"
     },
     {
       "speaker": "四国めたん",
-      "text": "確かにコストは課題ですが、遠隔モニタリング技術が進むことで実用化への道は開けるでしょう。"
+      "text": "続いては感情認識のための『Learning from Brain Topography』。脳の局所・全体構造を組み込んだグラフトランスフォーマーネットワークで、従来よりも高い感情分類精度を達成しています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "次の論文は？ 何か面白いことあるかな。"
+      "text": "感情って、脳の地図を読むようなものなのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "第2論文は、ワイヤレス乾式EEGヘッドセットで取得した視覚誘発電位（VEP）の経験依存性可塑性を短時間で評価する方法です。"
+      "text": "『Contrastive and Multi-Task Learning on Noisy Brain Signals』では、ノイズ抑制と多タスク学習を組み合わせて運動イメージングやカオス判定を同時に行うフレームワークを提案しています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "ワイヤレスヘッドセット？ これって便利そう！"
+      "text": "カオスって、脳の中でお祭りが起きてるみたいだね！"
     },
     {
       "speaker": "四国めたん",
-      "text": "はい、臨床現場での導入が容易になると期待されています。研究では、短時間でVEPを測定し、学習やリハビリ効果をリアルタイムでモニタリングできることが示されました。"
+      "text": "次に『Local-Global Feature Fusion for Subject-Independent EEG Emotion Recognition』。局所チャネル特徴とグローバル試験レベル特徴を融合し、被験者間の差異を克服しています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "リアルタイムで効果がわかると、治療の調整も楽になるね。"
+      "text": "他の人と同じ感情を測れるって、素敵だね！"
     },
     {
       "speaker": "四国めたん",
-      "text": "そうです。また、乾式センサーは装着時間が短く、患者の負担も軽減されます。"
+      "text": "『Backpropagation-Free Test-Time Adaptation for Lightweight EEG-Based Brain-Computer Interfaces』は、バックプロパゲーションを使わずにテスト時に適応する手法で、軽量化とプライバシー保護を両立しています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "第三の論文は… 何か怖い話かな？"
+      "text": "脳波をコントロールするだけで、プライバシーも守れるんだね！"
     },
     {
       "speaker": "四国めたん",
-      "text": "第3論文は、外傷後に脳萎縮を呈し、水頭症を疑わせるケースで、実は散発性クロイツフェルト・ヤコブ病（sCJD）であったという症例報告です。"
+      "text": "最後に『Contextual Discrepancy-Aware Contrastive Learning』。小規模サンプルでの医療時系列診断において、コンテキスト違いを考慮した対照学習で精度向上が確認されています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "CJDって、まさかの急速進行性疾患だね。"
+      "text": "小さなデータでも大丈夫、脳の秘密を解き明かす鍵だね！"
     },
     {
       "speaker": "四国めたん",
-      "text": "はい、通常は1年以内に死亡する重篤な疾患です。研究者は、最新の画像診断と病理学的検査を組み合わせて正確な診断を行い、他疾患との鑑別の重要性を強調しています。"
+      "text": "本日のまとめですが、時間的ダイナミクスの重要性から感情認識への応用、そしてプライバシーを考慮したテスト時適応まで、多岐にわたる進展が報告されています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "外傷とCJDが混同されるのは危険だね。"
+      "text": "脳波の世界は広いね、次回もぜひ探検したいな！"
     },
     {
       "speaker": "四国めたん",
-      "text": "その通りです。早期診断と適切な治療法の模索が今後の課題です。"
-    },
-    {
-      "speaker": "ずんだもん",
-      "text": "最後に第4論文は？ 何か技術的なものかな。"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "第4論文は、脳のトップオロジーを学習する階層的局所-全体グラフ変換ネットワーク（Neuro-HGLN）を用いてEEGから感情認識を行う手法です。"
-    },
-    {
-      "speaker": "ずんだもん",
-      "text": "グラフ変換ネットワーク？ なんか未来的な響きだね。"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "はい、脳の局所的な接続と全体的な依存関係を同時に捉えることで、従来の深層学習よりも高精度な感情解析が可能になりました。"
-    },
-    {
-      "speaker": "ずんだもん",
-      "text": "これで人の心を読む技術が進むと、AIに好かれやすくなるかもね。"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "感情認識は医療や人間工学、エンターテインメント分野で広く応用が期待されています。"
-    },
-    {
-      "speaker": "ずんだもん",
-      "text": "まとめると、高齢者向けの個別フィードバック、ワイヤレスでリアルタイム評価、外傷とCJDの鑑別、そして感情解析まで… すごいぞ！"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "はい、EEG研究は多岐にわたり、臨床応用からAIまで幅広い分野で進展しています。"
-    },
-    {
-      "speaker": "ずんだもん",
-      "text": "次回はもっと面白い研究を探してくるよ。では、またね！"
+      "text": "次回は脳機能イメージングと機械学習の融合について掘り下げます。ご期待ください。"
     }
   ],
   "references": [
     {
-      "title": "Individual neural dynamics of successful Gamma neuromodulation through EEG-neurofeedback in the aging brain",
-      "authors": "Houmani N.",
-      "url": "https://doi.org/10.1038/s41598-025-30212-0",
-      "doi": "10.1038/s41598-025-30212-0",
-      "source": "Scopus",
-      "published": "2026-12-01"
+      "title": "Simple Models, Rich Representations: Visual Decoding from Primate Intracortical Neural Signals",
+      "authors": "Matteo Ciferri, Matteo Ferrante, Nicola Toschi",
+      "url": "https://arxiv.org/abs/2601.11108v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-16T09:10:31Z"
     },
     {
-      "title": "A brief visual evoked potential (VEP) modulation assessment of experience-dependent plasticity recorded via wireless dry-EEG headset in Phase 1 clinical units",
-      "authors": "McWilliams E.C.",
-      "url": "https://doi.org/10.1038/s41598-025-29950-y",
-      "doi": "10.1038/s41598-025-29950-y",
-      "source": "Scopus",
-      "published": "2026-12-01"
+      "title": "Depression Detection Based on Electroencephalography Using a Hybrid Deep Neural Network CNN-GRU and MRMR Feature Selection",
+      "authors": "Mohammad Reza Yousefi, Hajar Ismail Al-Tamimi, Amin Dehghani",
+      "url": "https://arxiv.org/abs/2601.10959v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-16T02:58:17Z"
     },
     {
       "title": "Sporadic Creutzfeldt Jakob disease presenting with cerebral atrophy following traumatic brain injury mimicking hydrocephalus a case report and literature review",
@@ -158,7 +122,47 @@
       "doi": "",
       "source": "arXiv",
       "published": "2026-01-15T15:52:05Z"
+    },
+    {
+      "title": "Contrastive and Multi-Task Learning on Noisy Brain Signals with Nonlinear Dynamical Signatures",
+      "authors": "Sucheta Ghosh, Zahra Monfared, Felix Dietrich",
+      "url": "https://arxiv.org/abs/2601.08549v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-13T13:36:38Z"
+    },
+    {
+      "title": "Local-Global Feature Fusion for Subject-Independent EEG Emotion Recognition",
+      "authors": "Zheng Zhou, Isabella McEvoy, Camilo E. Valderrama",
+      "url": "https://arxiv.org/abs/2601.08094v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-13T00:27:01Z"
+    },
+    {
+      "title": "Backpropagation-Free Test-Time Adaptation for Lightweight EEG-Based Brain-Computer Interfaces",
+      "authors": "Siyang Li, Jiayi Ouyang, Zhenyao Cui, Ziwei Wang, Tianwang Jia, Feng Wan, Dongrui Wu",
+      "url": "https://arxiv.org/abs/2601.07556v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-12T14:08:18Z"
+    },
+    {
+      "title": "Contextual Discrepancy-Aware Contrastive Learning for Robust Medical Time Series Diagnosis in Small-Sample Scenarios",
+      "authors": "Kaito Tanaka, Aya Nakayama, Masato Ito, Yuji Nishimura, Keisuke Matsuda",
+      "url": "https://arxiv.org/abs/2601.07548v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-12T13:54:50Z"
+    },
+    {
+      "title": "No Title",
+      "authors": "Unknown",
+      "url": "",
+      "doi": "",
+      "source": "Scopus",
+      "published": ""
     }
   ],
-  "date": "2026-01-19"
+  "date": "2026-01-20"
 }

@@ -17,6 +17,12 @@ SPEAKERS = {
     "四国めたん": 2
 }
 
+# ファイル名用の英語マッピング (日本語ファイル名を回避)
+SPEAKER_EN_MAP = {
+    "ずんだもん": "zundamon",
+    "四国めたん": "metan"
+}
+
 def generate_audio_file(text, speaker_name, output_filename):
     """
     VOICEVOX APIを使ってテキストから音声ファイルを生成する。
@@ -24,7 +30,7 @@ def generate_audio_file(text, speaker_name, output_filename):
     2. synthesis で音声合成
     """
     speaker_id = SPEAKERS.get(speaker_name, 3) # デフォルトはずんだもん
-    
+
     # 1. Query Creation
     query_payload = {"text": text, "speaker": speaker_id}
     try:
@@ -45,10 +51,10 @@ def generate_audio_file(text, speaker_name, output_filename):
             timeout=60
         )
         synth_res.raise_for_status()
-        
+
         with open(output_filename, "wb") as f:
             f.write(synth_res.content)
-        
+
         return True
     except Exception as e:
         print(f"Error synthesizing audio for {speaker_name}: {e}")
@@ -76,16 +82,19 @@ def process_script(script_file="script.json", output_dir="output_audio"):
     for i, line in enumerate(dialogues):
         speaker = line["speaker"]
         text = line["text"]
-        filename = os.path.join(output_dir, f"{i:03d}_{speaker}.wav")
-        
+
+        # 安全なファイル名を生成
+        safe_speaker = SPEAKER_EN_MAP.get(speaker, "unknown")
+        filename = os.path.join(output_dir, f"{i:03d}_{safe_speaker}.wav")
+
         print(f"[{i+1}/{len(dialogues)}] Generating {speaker}: {text[:20]}...")
         success = generate_audio_file(text, speaker, filename)
-        
+
         if success:
             audio_files.append(filename)
         else:
             print("  -> Failed.")
-        
+
         # 少し待機（API負荷軽減）
         time.sleep(0.1)
 

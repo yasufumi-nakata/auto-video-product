@@ -1,209 +1,183 @@
 """
-毎日10時にEEG論文紹介動画を自動生成・アップロードするスクリプト
+Daily Paper Video Generator Service
+Fetches papers from arXiv/Scopus, generates script, audio, thumbnail, video, and uploads to YouTube.
+Runs daily at 10:00 JST.
 """
+import time
+import datetime
 import os
+import shutil
+import argparse
 import sys
 import json
-import shutil
-import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 from dotenv import load_dotenv
 
-load_dotenv()
-
-# 自作モジュールをインポート
-from paper_fetcher import fetch_papers, SEARCH_QUERY
-from paper_script_generator import generate_paper_script, format_description
+# Import our modules
+from paper_fetcher import fetch_papers
+from paper_script_generator import generate_paper_script
 from audio_generator import process_script
 from simple_image_gen import generate_thumbnail
 from video_editor import create_podcast_video
 from youtube_uploader import upload_video
 
+# Load environment variables
+load_dotenv()
 
-def wait_until_target_time(target_hour=10, target_minute=0):
-    """指定時刻まで待機"""
-    now = datetime.now()
+# Configuration
+TARGET_HOUR = 10  # 10:00 AM JST
+TARGET_MINUTE = 0
+
+def cleanup_temp_files():
+    """Clean up temporary files from previous runs."""
+    extensions = ['.mp3', '.wav', '.png', '.mp4', '.json']
+    for filename in os.listdir('.'):
+        if any(filename.endswith(ext) for ext in extensions):
+            if filename.startswith('temp_') or filename.startswith('speech_') or filename == 'script.json' or filename == 'thumbnail.png':
+                try:
+                    os.remove(filename)
+                except OSError:
+                    pass
+
+    if os.path.exists('output_audio'):
+        shutil.rmtree('output_audio', ignore_errors=True)
+
+def wait_until_target_time(target_hour, target_minute):
+    """Wait until the target time (JST)."""
+    now = datetime.datetime.now()
     target = now.replace(hour=target_hour, minute=target_minute, second=0, microsecond=0)
 
     if now >= target:
-        target = target + timedelta(days=1)
+        target = target + datetime.timedelta(days=1)
 
     wait_seconds = (target - now).total_seconds()
-    print(f"Next run scheduled at {target.strftime('%Y-%m-%d %H:%M:%S')} (waiting {wait_seconds:.0f}s)")
+    print(f"Current time: {now.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Next run scheduled at: {target.strftime('%Y-%m-%d %H:%M:%S')} (waiting {wait_seconds/3600:.1f} hours)")
+
     return wait_seconds
 
-
-def cleanup_temp_files():
-    """一時ファイルを削除"""
-    files_to_remove = ["script.json", "thumbnail.png", "final_video.mp4"]
-    folders_to_remove = ["output_audio"]
-
-    for f in files_to_remove:
-        if os.path.exists(f):
-            os.remove(f)
-            print(f"Removed: {f}")
-
-    for folder in folders_to_remove:
-        if os.path.exists(folder):
-            shutil.rmtree(folder)
-            print(f"Removed folder: {folder}")
-
-
-def generate_daily_video(test_mode=False, max_papers=3):
+def generate_daily_video(test_mode=False, max_papers=None, target_date=None):
     """
-    1日分の論文紹介動画を生成してアップロード
-
-    Args:
-        test_mode: Trueの場合、アップロードをスキップ
-        max_papers: 取得する論文の最大数
+    Main workflow for daily video generation.
     """
-    today = datetime.now().strftime("%Y-%m-%d")
-    print(f"\n{'='*50}")
-    print(f"=== Daily Paper Video Generation: {today} ===")
-    print(f"{'='*50}\n")
+    print(f"\n==================================================")
 
-    # 1. 論文を取得
-    print("=== Phase 1: Fetching Papers ===")
-    papers = fetch_papers(max_results=max_papers)
+    if target_date:
+        today = target_date
+        print(f"=== Paper Video Generation for: {today} (Manual Override) ===")
+    else:
+        today = datetime.date.today()
+        print(f"=== Paper Video Generation for: {today} ===")
 
-    if not papers:
-        print("No papers found. Skipping video generation.")
-        return None
+    # 1. Fetch Papers
+    print(f"\n=== Phase 1: Fetching Papers for {today} ===")
 
-    print(f"Found {len(papers)} papers")
+    all_papers = fetch_papers(max_results=10, days_back=1)
 
-    # 2. 台本を生成
+    print(f"Total papers: {len(all_papers)}")
+
+    if not all_papers:
+        print("No papers found from any source.")
+        return
+
+    # 4. Generate Script
     print("\n=== Phase 2: Generating Script ===")
-    script = generate_paper_script(papers, today)
-
-    if not script:
+    script_data = generate_paper_script(all_papers)
+    if not script_data:
         print("Failed to generate script.")
-        return None
+        return
 
-    # 台本を保存
+    # Save script to file for audio generator
     with open("script.json", "w", encoding="utf-8") as f:
-        json.dump(script, f, indent=2, ensure_ascii=False)
+        json.dump(script_data, f, indent=2, ensure_ascii=False)
     print("Script saved to script.json")
 
-    # 3. 音声を生成
+    # 5. Generate Audio
     print("\n=== Phase 3: Generating Audio ===")
-    audio_files = process_script("script.json", "output_audio")
-
-    if not audio_files:
+    audio_paths = process_script("script.json", "output_audio")
+    if not audio_paths:
         print("Failed to generate audio.")
-        return None
+        return
 
-    # 4. サムネイルを生成
+    # 6. Generate Thumbnail
     print("\n=== Phase 4: Generating Thumbnail ===")
-    title = script.get("title", "EEG論文まとめ")
-    prompt = f"masterpiece, best quality, anime style, a futuristic brain research laboratory with a cute green haired anime girl and a pink haired elegant anime girl discussing EEG brain waves data on holographic screens, scientific atmosphere, highly detailed, 4k"
-    thumbnail_path = generate_thumbnail(prompt, "thumbnail.png")
+    if all_papers:
+        title_for_prompt = all_papers[0]['title']
+    else:
+        title_for_prompt = f"Brain Computer Interface News {today}"
 
+    thumbnail_path = generate_thumbnail(title_for_prompt)
     if not thumbnail_path:
-        print("Failed to generate thumbnail.")
-        return None
+        print("Failed to generate thumbnail. Using fallback/black image might happen.")
 
-    # 5. 動画を生成（字幕付き）
-    print("\n=== Phase 5: Creating Video with Subtitles ===")
-    video_path = create_podcast_video(
-        thumbnail_path,
-        "output_audio",
-        "final_video.mp4",
-        script_file="script.json"
-    )
+    # 7. Create Video
+    print("\n=== Phase 5: Creating Video ===")
+    video_path = f"daily_news_{today}.mp4"
+    if test_mode:
+        video_path = f"test_video_{today}.mp4"
 
-    if not video_path:
+    # Corrected arguments: image_path, audio_folder, output_filename, script_file
+    final_video = create_podcast_video(thumbnail_path, "output_audio", video_path, script_file="script.json")
+
+    if not final_video:
         print("Failed to create video.")
-        return None
+        return
 
-    # 6. YouTubeにアップロード
-    if not test_mode:
-        print("\n=== Phase 6: Uploading to YouTube ===")
+    # 8. Upload to YouTube (Always upload)
+    print("\n=== Phase 6: Uploading to YouTube ===")
+    title = f"Brain Tech News {today} | New EEG & BCI Papers"
+    if test_mode:
+        title = f"[TEST] {title}"
 
-        # タイトルと概要欄を作成
-        video_title = f"【{today}】EEGの論文まとめ - {title}"
-        if len(video_title) > 100:
-            video_title = video_title[:97] + "..."
+    description = f"Daily summary of the latest EEG and BCI research papers selected from arXiv and Scopus.\n\nDate: {today}\n\nPapers covered:\n"
+    for p in all_papers:
+        description += f"- {p['title']}\n  {p['url']}\n"
 
-        description = format_description(script)
-
+    try:
         video_id = upload_video(
-            video_path,
-            video_title,
-            description,
+            file_path=final_video,
+            title=title,
+            description=description,
+            category_id="28", # Science & Technology
+            keywords=["EEG", "BCI", "Neuroscience", "Brain Computer Interface", "AI", "Research"],
             privacy_status="public"
         )
+        print(f"Video uploaded successfully! ID: {video_id}")
+        print(f"URL: https://youtu.be/{video_id}")
+    except Exception as e:
+        print(f"Failed to upload video: {e}")
 
-        if video_id:
-            print(f"\nUpload Complete! Video ID: {video_id}")
-            print(f"URL: https://www.youtube.com/watch?v={video_id}")
-            return video_id
-        else:
-            print("Upload failed.")
-            return None
-    else:
-        print("\n=== Test Mode: Skipping Upload ===")
-        print(f"Video created: {video_path}")
-        print(f"Title would be: 【{today}】EEGの論文まとめ - {title}")
-        return "test_mode"
-
+    return final_video
 
 def run_service(test_mode=False):
     """
-    毎日10時に動画を生成するサービスを起動
+    Run as a service, executing daily at 10:00 JST.
     """
-    print("=== Daily Paper Video Service (10:00 AM) ===")
-    print(f"Search Query: {SEARCH_QUERY}")
+    print(f"Starting Brain Paper Video Service (Target: 10:00 JST)")
 
     while True:
-        try:
-            # 動画生成を実行
-            result = generate_daily_video(test_mode=test_mode)
-
-            if result:
-                print(f"\nDaily video generation completed: {result}")
-            else:
-                print("\nDaily video generation failed or skipped.")
-
-            # テストモードの場合は1回で終了
-            if test_mode:
-                print("Test run complete.")
-                break
-
-            # 一時ファイルをクリーンアップ
-            cleanup_temp_files()
-
-            # 次の10時まで待機
-            wait_seconds = wait_until_target_time(10, 0)
+        wait_seconds = wait_until_target_time(TARGET_HOUR, TARGET_MINUTE)
+        if wait_seconds > 0:
             time.sleep(wait_seconds)
 
+        print("\nWake up! Starting daily video generation...")
+        try:
+            cleanup_temp_files()
+            generate_daily_video(test_mode=test_mode)
         except Exception as e:
-            print(f"Error during video generation: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"Error during daily generation: {e}")
+        time.sleep(60)
 
-            if test_mode:
-                break
-
-            # エラー時は1時間後にリトライ
-            print("Retrying in 1 hour...")
-            time.sleep(3600)
-
-
-def run_once(test_mode=False, max_papers=3):
-    """
-    1回だけ実行（テスト用）
-    """
+def run_once(test_mode=False, max_papers=None):
+    cleanup_temp_files()
     return generate_daily_video(test_mode=test_mode, max_papers=max_papers)
 
-
 if __name__ == "__main__":
-    import argparse
+    parser = argparse.ArgumentParser(description="Daily Paper Video Generator Service")
+    parser.add_argument("--test", action="store_true", help="Run in test mode (no upload, verbose output)")
+    parser.add_argument("--once", action="store_true", help="Run once immediately and exit")
+    parser.add_argument("--papers", type=int, help="Max number of papers to process (for testing)")
 
-    parser = argparse.ArgumentParser(description="Daily Paper Video Generator")
-    parser.add_argument("--test", action="store_true", help="Test mode (no upload)")
-    parser.add_argument("--once", action="store_true", help="Run once and exit")
-    parser.add_argument("--papers", type=int, default=3, help="Number of papers to include")
     args = parser.parse_args()
 
     if args.once:

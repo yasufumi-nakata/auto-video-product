@@ -1,0 +1,2 @@
+/Users/yasufumi/miniforge3/lib/python3.10/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(

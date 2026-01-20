@@ -58,7 +58,7 @@ def generate_script(topic_text):
     for attempt in range(max_retries):
         try:
             print(f"Attempt {attempt + 1}/{max_retries}...")
-            response = requests.post(LM_STUDIO_URL, headers=headers, json=payload, timeout=300)
+            response = requests.post(LM_STUDIO_URL, headers=headers, json=payload, timeout=600)
             response.raise_for_status()
             
             result = response.json()
