@@ -2,6 +2,7 @@ import os
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
+from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from dotenv import load_dotenv
@@ -38,10 +39,14 @@ def get_authenticated_service():
 
     return googleapiclient.discovery.build(API_SERVICE_NAME, API_VERSION, credentials=creds)
 
-def upload_video(file_path, title, description, category_id="22", privacy_status="private"):
+def upload_video(file_path, title, description, category_id="22", keywords=None, privacy_status="private"):
     """
     YouTubeに動画をアップロードする
     """
+    if not os.path.exists(file_path):
+        print(f"Error: video file not found: {file_path}")
+        return None
+
     youtube = get_authenticated_service()
     if not youtube:
         return None
@@ -59,11 +64,14 @@ def upload_video(file_path, title, description, category_id="22", privacy_status
         }
     }
 
+    if keywords:
+        body["snippet"]["tags"] = keywords
+
     try:
         request = youtube.videos().insert(
             part="snippet,status",
             body=body,
-            media_body=googleapiclient.http.MediaFileUpload(file_path, chunksize=-1, resumable=True)
+            media_body=MediaFileUpload(file_path, chunksize=-1, resumable=True)
         )
         
         response = None

@@ -11,6 +11,29 @@ load_dotenv()
 
 LM_STUDIO_URL = os.getenv("LM_STUDIO_BASE_URL", "http://localhost:1234/v1") + "/chat/completions"
 API_KEY = os.getenv("LM_STUDIO_API_KEY", "lm-studio")
+DEFAULT_MODEL = "openai/gpt-oss-20b"
+
+
+def resolve_model():
+    model = os.getenv("LM_STUDIO_MODEL")
+    if model:
+        return model
+
+    base_url = os.getenv("LM_STUDIO_BASE_URL", "http://localhost:1234/v1")
+    try:
+        response = requests.get(f"{base_url}/models", timeout=10)
+        response.raise_for_status()
+        data = response.json().get("data", [])
+        for item in data:
+            model_id = item.get("id")
+            if model_id and "embed" not in model_id.lower():
+                return model_id
+        if data:
+            return data[0].get("id")
+    except Exception as e:
+        print(f"Warning: Could not fetch LM Studio models: {e}")
+
+    return DEFAULT_MODEL
 
 
 def generate_paper_script(papers, date_str=None):
@@ -83,7 +106,9 @@ Format:
         "Authorization": f"Bearer {API_KEY}"
     }
 
+    model = resolve_model()
     payload = {
+        "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}

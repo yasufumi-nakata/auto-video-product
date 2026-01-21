@@ -1,93 +1,105 @@
 {
-  "title": "2026-01-20 EEG論文まとめ",
+  "title": "今日のEEG論文まとめ",
   "dialogue": [
     {
       "speaker": "ずんだもん",
-      "text": "今日は2026年1月20日、EEG論文まとめなのだ！"
+      "text": "2026-01-21なのだ！今日のEEG論文まとめ、始めるぞー！"
     },
     {
       "speaker": "四国めたん",
-      "text": "本日は、脳波解析に関する最新研究を順番にご紹介いたします。"
+      "text": "本日は、最新のEEG関連研究を７つご紹介します。まずは第一論文からです。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "まずは『Simple Models, Rich Representations』！なんだかシンプルだけど、何がすごいの？"
+      "text": "第一論文は『Simple Models, Rich Representations』ってタイトルで、やっぱり視覚情報を脳からデコードするんだのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "この研究は、霊長類の皮質内高密度記録から視覚情報をデコードする方法を検証しています。主な発見は、モデル構造よりも時間的ダイナミクスを捉えることが精度向上に大きく寄与するという点です。"
+      "text": "はい。研究者はマーメット・シリと仲間たちで、プライムの皮質内高密度記録を使い、視覚刺激に対する脳活動から画像情報を復元するモデルを検証しました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "時間を意識するって、脳はタイムラインだね！次はうつ病検出の話。"
+      "text": "そっかー、モデルはシンプルなのに時系列をうまく扱えると精度が上がるっていうんだのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "『Depression Detection Based on Electroencephalography』では、CNN-GRUとMRMR特徴選択を組み合わせてうつ状態を判定しています。結果は、従来の自己申告法よりも客観的に高い精度を示し、早期診断の可能性が示唆されました。"
+      "text": "正確には、モデルの構造よりも脳信号の時間的ダイナミクスを捉えることが重要だと結論づけました。将来はロボットやARに応用できる可能性がありますね。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "うつ病って、頭の中で暗い雲が漂ってるんだね。"
+      "text": "次は『Depression Detection Based on Electroencephalography』だね！うるさい心の波を見抜くんだのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "次はクリッツフェルト・ヤコブ病のケースレポート。トラウマ後に脳萎縮が起き、ヒドロセファローズと誤診されるケースを報告しています。放射線学的所見が診断の鍵になると指摘されています。"
+      "text": "この研究では、CNNとGRUを組み合わせたハイブリッドネットワークにMRMR特徴選択を導入し、うつ状態と非うつ状態の分類精度を向上させました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "まるで脳の中に迷路ができたみたいだね！"
+      "text": "うつ病って、診断が難しいのに…自動で判定できたら救われるってことか！"
     },
     {
       "speaker": "四国めたん",
-      "text": "続いては感情認識のための『Learning from Brain Topography』。脳の局所・全体構造を組み込んだグラフトランスフォーマーネットワークで、従来よりも高い感情分類精度を達成しています。"
+      "text": "そうです。客観的なバイオマーカーとしてのEEGが、早期診断と治療効果の評価に大きく貢献する可能性があります。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "感情って、脳の地図を読むようなものなのだ！"
+      "text": "第三は『Sporadic Creutzfeldt Jakob disease』で、脳の萎縮がヘモジアを思わせるケースだって？"
     },
     {
       "speaker": "四国めたん",
-      "text": "『Contrastive and Multi-Task Learning on Noisy Brain Signals』では、ノイズ抑制と多タスク学習を組み合わせて運動イメージングやカオス判定を同時に行うフレームワークを提案しています。"
+      "text": "はい。CJDは急速に進行する神経変性疾患で、MRIの所見がヘモジアと誤診されやすいケースを報告。放射線所見の詳細解析が診断精度向上に寄与します。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "カオスって、脳の中でお祭りが起きてるみたいだね！"
+      "text": "まさに診断の落とし穴を突き止めるってことか！"
     },
     {
       "speaker": "四国めたん",
-      "text": "次に『Local-Global Feature Fusion for Subject-Independent EEG Emotion Recognition』。局所チャネル特徴とグローバル試験レベル特徴を融合し、被験者間の差異を克服しています。"
+      "text": "次は『Learning from Brain Topography』。グラフトランスフォーマーを使ってEEGから感情認識を行う新手法です。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "他の人と同じ感情を測れるって、素敵だね！"
+      "text": "地図みたいに脳をつなげて感情を読み取るんだのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "『Backpropagation-Free Test-Time Adaptation for Lightweight EEG-Based Brain-Computer Interfaces』は、バックプロパゲーションを使わずにテスト時に適応する手法で、軽量化とプライバシー保護を両立しています。"
+      "text": "正にそうです。局所的な接続と全体的な依存関係を同時に捉えることで、従来手法よりも高い認識率を実現しました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "脳波をコントロールするだけで、プライバシーも守れるんだね！"
+      "text": "次は『Contrastive and Multi-Task Learning』。ノイズと非線形ダイナミクスを同時に扱うんだのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "最後に『Contextual Discrepancy-Aware Contrastive Learning』。小規模サンプルでの医療時系列診断において、コンテキスト違いを考慮した対照学習で精度向上が確認されています。"
+      "text": "二段階のマルチタスクフレームワークで、まずデノイズオートエンコーダーでアーチファクトを除去し、次に運動イメージ分類やカオス判定など複数タスクを同時に学習します。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "小さなデータでも大丈夫、脳の秘密を解き明かす鍵だね！"
+      "text": "複数の課題を同時にやるって、脳もマルチタスクだよね！"
     },
     {
       "speaker": "四国めたん",
-      "text": "本日のまとめですが、時間的ダイナミクスの重要性から感情認識への応用、そしてプライバシーを考慮したテスト時適応まで、多岐にわたる進展が報告されています。"
+      "text": "はい、実際に多様なEEG応用で有効性が示されています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "脳波の世界は広いね、次回もぜひ探検したいな！"
+      "text": "次は『Local-Global Feature Fusion』。個人差を越える感情認識に挑むんだのだ！"
     },
     {
       "speaker": "四国めたん",
-      "text": "次回は脳機能イメージングと機械学習の融合について掘り下げます。ご期待ください。"
+      "text": "ローカル（チャネル単位）とグローバル（試験全体）を融合することで、被験者間の違いを緩和し、SEED-VIIデータセットで高精度を達成しました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "うーん、個人差があるときは大変だよね！でもこれで誰にでも使える感情認識が実現するかも！"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "最後に、情報不足の第七論文については現時点で詳細が不明です。今後の更新を待ちましょう。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "今日のまとめはここまで！次回はもっと面白い脳科学を持ってくるよ、期待しててね！"
     }
   ],
   "references": [
@@ -140,22 +152,6 @@
       "published": "2026-01-13T00:27:01Z"
     },
     {
-      "title": "Backpropagation-Free Test-Time Adaptation for Lightweight EEG-Based Brain-Computer Interfaces",
-      "authors": "Siyang Li, Jiayi Ouyang, Zhenyao Cui, Ziwei Wang, Tianwang Jia, Feng Wan, Dongrui Wu",
-      "url": "https://arxiv.org/abs/2601.07556v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-12T14:08:18Z"
-    },
-    {
-      "title": "Contextual Discrepancy-Aware Contrastive Learning for Robust Medical Time Series Diagnosis in Small-Sample Scenarios",
-      "authors": "Kaito Tanaka, Aya Nakayama, Masato Ito, Yuji Nishimura, Keisuke Matsuda",
-      "url": "https://arxiv.org/abs/2601.07548v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-12T13:54:50Z"
-    },
-    {
       "title": "No Title",
       "authors": "Unknown",
       "url": "",
@@ -164,5 +160,5 @@
       "published": ""
     }
   ],
-  "date": "2026-01-20"
+  "date": "2026-01-21"
 }
