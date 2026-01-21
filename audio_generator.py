@@ -2,6 +2,7 @@ import os
 import json
 import requests
 import time
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,6 +24,42 @@ SPEAKER_EN_MAP = {
     "四国めたん": "metan"
 }
 
+ABBREVIATION_READINGS = [
+    ("fMRI", "エフエムアールアイ"),
+    ("sEEG", "エスイーイージー"),
+    ("iEEG", "アイイーイージー"),
+    ("EEG", "イーイージー"),
+    ("MEG", "エムイージー"),
+    ("EMG", "イーエムジー"),
+    ("ECG", "イーシージー"),
+    ("ERP", "イーアールピー"),
+    ("MRI", "エムアールアイ"),
+    ("PET", "ピーイーティー"),
+    ("BCI", "ビーシーアイ"),
+    ("CNN", "シーエヌエヌ"),
+    ("RNN", "アールエヌエヌ"),
+    ("GRU", "ジーアールユー"),
+    ("LSTM", "エルエスティーエム"),
+    ("SVM", "エスブイエム"),
+    ("AI", "エーアイ"),
+    ("ML", "エムエル"),
+    ("DL", "ディーエル"),
+    ("AR", "エーアール"),
+    ("VR", "ブイアール"),
+]
+
+ABBREVIATION_PATTERNS = [
+    (re.compile(rf"(?<![A-Za-z0-9]){re.escape(abbr)}(?![A-Za-z0-9])"), reading)
+    for abbr, reading in ABBREVIATION_READINGS
+]
+
+def normalize_tts_text(text):
+    normalized = text
+    for pattern, reading in ABBREVIATION_PATTERNS:
+        normalized = pattern.sub(reading, normalized)
+    normalized = normalized.replace("/", "スラッシュ")
+    return normalized
+
 def generate_audio_file(text, speaker_name, output_filename):
     """
     VOICEVOX APIを使ってテキストから音声ファイルを生成する。
@@ -30,9 +67,10 @@ def generate_audio_file(text, speaker_name, output_filename):
     2. synthesis で音声合成
     """
     speaker_id = SPEAKERS.get(speaker_name, 3) # デフォルトはずんだもん
+    tts_text = normalize_tts_text(text)
 
     # 1. Query Creation
-    query_payload = {"text": text, "speaker": speaker_id}
+    query_payload = {"text": tts_text, "speaker": speaker_id}
     try:
         query_res = requests.post(f"{VOICEVOX_URL}/audio_query", params=query_payload, timeout=10)
         query_res.raise_for_status()

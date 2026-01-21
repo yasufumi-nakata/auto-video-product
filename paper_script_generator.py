@@ -12,6 +12,7 @@ load_dotenv()
 LM_STUDIO_URL = os.getenv("LM_STUDIO_BASE_URL", "http://localhost:1234/v1") + "/chat/completions"
 API_KEY = os.getenv("LM_STUDIO_API_KEY", "lm-studio")
 DEFAULT_MODEL = "openai/gpt-oss-20b"
+SUMMARY_MAX_CHARS = int(os.getenv("PAPER_SUMMARY_MAX_CHARS", "1200"))
 
 
 def resolve_model():
@@ -36,6 +37,15 @@ def resolve_model():
     return DEFAULT_MODEL
 
 
+def normalize_summary(summary):
+    cleaned = " ".join((summary or "").split())
+    if not cleaned:
+        return "要約なし"
+    if len(cleaned) > SUMMARY_MAX_CHARS:
+        return cleaned[:SUMMARY_MAX_CHARS] + "..."
+    return cleaned
+
+
 def generate_paper_script(papers, date_str=None):
     """
     複数の論文情報からPodcast台本を生成
@@ -54,13 +64,18 @@ def generate_paper_script(papers, date_str=None):
     # 論文情報を整形
     papers_text = ""
     for i, paper in enumerate(papers, 1):
+        summary = normalize_summary(paper.get("summary"))
+        doi = paper.get("doi") or "なし"
+        published = paper.get("published") or "不明"
         papers_text += f"""
 【論文{i}】
-タイトル: {paper['title']}
-著者: {paper['authors']}
-出典: {paper['source']}
-URL: {paper['url']}
-要約: {paper['summary'][:500]}...
+タイトル: {paper.get('title', 'No Title')}
+著者: {paper.get('authors', 'Unknown')}
+出典: {paper.get('source', 'Unknown')}
+公開日: {published}
+URL: {paper.get('url', '')}
+DOI: {doi}
+要約: {summary}
 """
 
     system_prompt = """
@@ -70,6 +85,15 @@ URL: {paper['url']}
 登場人物は2人です：
 1. 「ずんだもん」: 好奇心旺盛で少し生意気なボケ役。語尾は「〜なのだ」「〜のだ」。
 2. 「四国めたん」: 冷静で知的なツッコミ役・解説役。丁寧な口調。
+
+【正確性ルール】
+- 入力にない情報は推測で断定しない
+- 数値/データセット/手法名/固有名詞は要約にあるもののみ使用する
+- 不明な点は「要約からは不明」と明記する
+
+【読み上げやすさ】
+- 英字略語は初出で読み方をカタカナで併記する（例: EEG=イーイージー）
+- 記号や英単語は必要に応じて読みやすく言い換える
 
 【重要】出力は必ず以下のJSONフォーマットのみにしてください。
 Markdownのコードブロック(```json)や、冒頭・末尾の挨拶、解説は一切不要です。
@@ -85,13 +109,30 @@ Format:
 }
 """
 
-    user_prompt = f"""以下の論文情報を元に、約3〜5分程度の論文紹介トーク台本を作成してください。
+    paper_count = len(papers)
+    if paper_count <= 4:
+        min_turns = 6
+    elif paper_count <= 7:
+        min_turns = 5
+    else:
+        min_turns = 4
+    target_minutes = min(12, max(8, paper_count + 3))
+
+    user_prompt = f"""以下の論文情報を元に、約{target_minutes}分程度の論文紹介トーク台本を作成してください。
 日付は{date_str}です。冒頭で日付と「今日のEEG論文まとめ」であることを紹介してください。
 
 各論文について：
-- 研究の目的と背景を簡潔に紹介
-- 主な発見や結果を説明
-- 研究の意義や今後の展望を述べる
+- 背景・先行研究の位置づけ（要約にない場合は「要約からは不明」と明記）
+- 研究の目的・課題
+- 手法・データ・対象
+- 主な結果や示唆
+- 限界・今後の展望（要約にない場合は明記）
+
+構成指示：
+- 論文の順番は入力順を厳守
+- 各論文につき最低{min_turns}往復（ずんだもん→めたんで1往復）
+- 1セリフは1〜2文で、読み上げやすい長さにする
+- 推測で断定しない
 
 {papers_text}
 
@@ -113,7 +154,7 @@ Format:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
         ],
-        "temperature": 0.7,
+        "temperature": 0.5,
         "max_tokens": 4000,
         "stream": False
     }
