@@ -1,108 +1,340 @@
 {
-  "title": "今日のEEG論文まとめ",
+  "title": "今日のEEG論文まとめ - 2026-01-22",
   "dialogue": [
     {
       "speaker": "ずんだもん",
-      "text": "2026-01-21なのだ！今日のEEG論文まとめ、始めるぞー！"
+      "text": "2026年1月22日、今日のEEG論文まとめだなの！"
     },
     {
       "speaker": "四国めたん",
-      "text": "本日は、最新のEEG関連研究を７つご紹介します。まずは第一論文からです。"
+      "text": "本日は、最新のEEG研究を順番にご紹介します。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "第一論文は『Simple Models, Rich Representations』ってタイトルで、やっぱり視覚情報を脳からデコードするんだのだ！"
+      "text": "まずは『Neural Tracking of Sustained Attention...』ってタイトルの論文、なんだか面白そうなのだ。"
     },
     {
       "speaker": "四国めたん",
-      "text": "はい。研究者はマーメット・シリと仲間たちで、プライムの皮質内高密度記録を使い、視覚刺激に対する脳活動から画像情報を復元するモデルを検証しました。"
+      "text": "背景としては、日常の会話が多感覚で動的だという点を指摘しつつ、従来は静かな音声のみの実験に限定されていたことを示しています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "そっかー、モデルはシンプルなのに時系列をうまく扱えると精度が上がるっていうんだのだ！"
+      "text": "研究目的は、モバイルEEGで実際の視聴覚環境下で注意追跡を行うことなのだ。"
     },
     {
       "speaker": "四国めたん",
-      "text": "正確には、モデルの構造よりも脳信号の時間的ダイナミクスを捉えることが重要だと結論づけました。将来はロボットやARに応用できる可能性がありますね。"
+      "text": "手法は、44本の頭皮電極と20本のcEEGridを用い、2人話者環境で持続注意・切替注意・自然会話の3条件を設定しました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "次は『Depression Detection Based on Electroencephalography』だね！うるさい心の波を見抜くんだのだ！"
+      "text": "結果は、P2ピークで注意の有無が差異することが確認できたんだね。"
     },
     {
       "speaker": "四国めたん",
-      "text": "この研究では、CNNとGRUを組み合わせたハイブリッドネットワークにMRMR特徴選択を導入し、うつ状態と非うつ状態の分類精度を向上させました。"
+      "text": "限定点としては、切替時の性能差が見られなかったことと、詳細な長期的評価は未実施である点が挙げられます。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "うつ病って、診断が難しいのに…自動で判定できたら救われるってことか！"
+      "text": "次は『Auditory Brain Passage Retrieval』というやつ、聞いたことあるのだ。"
     },
     {
       "speaker": "四国めたん",
-      "text": "そうです。客観的なバイオマーカーとしてのEEGが、早期診断と治療効果の評価に大きく貢献する可能性があります。"
+      "text": "背景は、情報検索で内部ニーズをクエリ化する難しさに対処するため、EEGから直接パッセージ表現を学習しようという試みです。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "第三は『Sporadic Creutzfeldt Jakob disease』で、脳の萎縮がヘモジアを思わせるケースだって？"
+      "text": "目的は、視覚刺激のみの従来研究を超えて聴覚EEGで検索性能を高めることなのだ。"
     },
     {
       "speaker": "四国めたん",
-      "text": "はい。CJDは急速に進行する神経変性疾患で、MRIの所見がヘモジアと誤診されやすいケースを報告。放射線所見の詳細解析が診断精度向上に寄与します。"
+      "text": "手法は、双方向エンコーダと4種類のプーリング（CLS, mean, max, multi-vector）を採用し、AliceとNieuwlandデータセットで比較実験しました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "まさに診断の落とし穴を突き止めるってことか！"
+      "text": "結果は、聴覚EEGが視覚より優れ、CLSプーリングでクロスセンサートレーニングが31%のMRR向上を示したんだ。"
     },
     {
       "speaker": "四国めたん",
-      "text": "次は『Learning from Brain Topography』。グラフトランスフォーマーを使ってEEGから感情認識を行う新手法です。"
+      "text": "限界は、データセットが小規模であることと、実際の音声検索インターフェースへの応用は未検証である点です。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "地図みたいに脳をつなげて感情を読み取るんだのだ！"
+      "text": "『RL-BioAug』は、データ拡張をRLで最適化するやつだね。"
     },
     {
       "speaker": "四国めたん",
-      "text": "正にそうです。局所的な接続と全体的な依存関係を同時に捉えることで、従来手法よりも高い認識率を実現しました。"
+      "text": "背景は、EEGの非定常性によりランダム拡張が情報を破壊する恐れがあると指摘しています。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "次は『Contrastive and Multi-Task Learning』。ノイズと非線形ダイナミクスを同時に扱うんだのだ！"
+      "text": "目的は、少量のラベルでRLエージェントが拡張ポリシーを学び、自己教師あり表現を強化することなのだ。"
     },
     {
       "speaker": "四国めたん",
-      "text": "二段階のマルチタスクフレームワークで、まずデノイズオートエンコーダーでアーチファクトを除去し、次に運動イメージ分類やカオス判定など複数タスクを同時に学習します。"
+      "text": "手法は、10%のラベルでRLエージェントを訓練し、Sleep-EDFXとCHB-MITでテストしました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "複数の課題を同時にやるって、脳もマルチタスクだよね！"
+      "text": "結果は、Macro-F1が9.69%と8.80%向上し、タスク別に最適な拡張（Time Masking, Crop & Resize）が選択されたと報告。"
     },
     {
       "speaker": "四国めたん",
-      "text": "はい、実際に多様なEEG応用で有効性が示されています。"
+      "text": "今後の課題は、他データセットへの汎化と実運用での計算コストです。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "次は『Local-Global Feature Fusion』。個人差を越える感情認識に挑むんだのだ！"
+      "text": "『Audio Outperforms Text for Visual Decoding』、音声がテキストより優れてるって聞いたらびっくりだね。"
     },
     {
       "speaker": "四国めたん",
-      "text": "ローカル（チャネル単位）とグローバル（試験全体）を融合することで、被験者間の違いを緩和し、SEED-VIIデータセットで高精度を達成しました。"
+      "text": "背景は、視覚情報の解読でテキストベースのゼロショットが主流だったことを指摘。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "うーん、個人差があるときは大変だよね！でもこれで誰にでも使える感情認識が実現するかも！"
+      "text": "目的は、音声セマンティクスを直接用いた多モーダルアラインメントモデルを構築することなのだ。"
     },
     {
       "speaker": "四国めたん",
-      "text": "最後に、情報不足の第七論文については現時点で詳細が不明です。今後の更新を待ちましょう。"
+      "text": "手法は、音声表現を用いたブレイン-ビジュアル-オーディエンシーアラインメントを提案し、テキストと比較しました。"
     },
     {
       "speaker": "ずんだもん",
-      "text": "今日のまとめはここまで！次回はもっと面白い脳科学を持ってくるよ、期待しててね！"
+      "text": "結果は、音声モダリティが解読精度と計算効率でテキストを上回ったと。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "限界は、データセットの多様性が限定的である点と、実際の視覚認知タスクへの適用検証が必要です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "『EEG-Titans』は長期脳波予測の話だね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "背景は、発作前の長時間ダイナミクスを捉えることが難しいとされています。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "目的は、長時間コンテキストを保持しつつ短期異常を検知するモデルを作ることなのだ。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "手法は、スライディングウィンドウ注意とリカレントメモリを組み合わせたDual-Branchアーキテクチャです。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "結果は、CHB-MITで99.46%の感度を達成し、ノイズ多い被験者ではFPR/hが0.00に減少したと。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "限界は、モデルの計算負荷と実際の臨床環境での検証が未完了です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "『ConvMambaNet』はCNNとMambaSSMを混ぜたやつだね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "背景は、EEGの時間的複雑さを捉えるために従来よりも長期依存性が必要だと指摘しています。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "目的は、リアルタイムで高精度な発作検出を実現することなのだ。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "手法は、CNNブロック内にMamba-SSMを埋め込み、CHB-MITで評価しました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "結果は、99%の精度とクラス不均衡に強い性能を示した。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "限界は、モデルサイズと実装の複雑さが臨床導入に課題となる点です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "『Democratizing Music Therapy』は、LLMでEEGを解釈するやつだね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "背景は、音楽療法でEEG解析が専門家に依存している現状を指摘。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "目的は、低コストホームデバイスでEEGを自動解析し、報告書と音楽提案を生成することなのだ。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "手法は、信号処理モジュールとLLM推論エージェントを組み合わせ、事後解析に焦点を当てました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "結果は、非専門家でも理解できるレポートと個別音楽推奨が可能になったと。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "限界は、リアルタイム適応機能の欠如とLLMの推論コストです。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "『HCFT』は、軽量で多尺度EEGデコーダだね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "背景は、EEGからの情報抽出に多様な時間・スペクトル特徴が必要だと指摘。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "目的は、双方向CNNエンコーダと階層的Transformerで表現学習を行うことなのだ。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "手法は、時間領域と時空間畳み込みブランチを交差注意で統合し、Dynamic Tanh正規化を導入しました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "結果は、BCI Competition IV-2bとCHB-MITで高精度を示し、軽量化に成功した。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "限界は、データセットが限定的であることと、実運用での安定性検証が必要です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "『Simple Models, Rich Representations』は、原始脳から画像を復元するやつだね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "背景は、視覚情報が脳活動からどのように再構成できるかを解明することです。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "目的は、時系列注意と浅いMLPで高精度の画像検索を実現することなのだ。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "手法は、THINGS Ventral Stream Spiking Datasetを用い、時間注意とMLPの組み合わせで70%のトップ1精度を達成しました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "結果は、モデル単純化が性能を保つことを示し、生成パイプラインも構築。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "限界は、データセットのサイズと多様性が限定的である点です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "『Depression Detection』は、EEGでうつ病を検出するやつだね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "背景は、自己申告に頼る診断の主観性を客観化する必要があると指摘。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "目的は、CNN-GRUとMRMR特徴選択でうつ状態を分類することなのだ。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "手法は、空間と時間特徴をCNN-GRUで抽出し、MRMRで重要特徴を選択後にFCNNで分類しました。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "結果は、うつ病と非うつ病の区別が可能だったと。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "限界は、データセットの規模と臨床検証が不足している点です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "最後に『No Title』は、要約がないから何とも言えないね。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "要約からは不明です。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "それでは今日のまとめ！いろんなEEG研究が進化していることがお分かりいただけたでしょうか。"
+    },
+    {
+      "speaker": "四国めたん",
+      "text": "次回は、脳波を用いた感情認識とその応用について掘り下げます。"
+    },
+    {
+      "speaker": "ずんだもん",
+      "text": "それではまた次回、楽しみにしていてくださいね。"
     }
   ],
   "references": [
+    {
+      "title": "Neural Tracking of Sustained Attention, Attention Switching, and Natural Conversation in Audiovisual Environments using Mobile EEG",
+      "authors": "Johanna Wilroth, Oskar Keding, Martin A. Skoglund, Maria Sandsten, Martin Enqvist, Emina Alickovic",
+      "url": "https://arxiv.org/abs/2601.15097v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-21T15:37:33Z"
+    },
+    {
+      "title": "Auditory Brain Passage Retrieval: Cross-Sensory EEG Training for Neural Information Retrieval",
+      "authors": "Niall McGuire, Yashar Moshfeghi",
+      "url": "https://arxiv.org/abs/2601.14001v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-20T14:22:41Z"
+    },
+    {
+      "title": "RL-BioAug: Label-Efficient Reinforcement Learning for Self-Supervised EEG Representation Learning",
+      "authors": "Cheol-Hui Lee, Hwa-Yeon Lee, Dong-Joo Kim",
+      "url": "https://arxiv.org/abs/2601.13964v2",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-20T13:38:01Z"
+    },
+    {
+      "title": "Audio Outperforms Text for Visual Decoding",
+      "authors": "Zhengdi Zhang, Hao Zhang, Wenjun Xia",
+      "url": "https://arxiv.org/abs/2601.13866v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-20T11:30:41Z"
+    },
+    {
+      "title": "EEG-Titans: Long-Horizon Seizure Forecasting via Dual-Branch Attention and Neural Memory",
+      "authors": "Tien-Dat Pham, Xuan-The Tran",
+      "url": "https://arxiv.org/abs/2601.13748v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-20T09:03:49Z"
+    },
+    {
+      "title": "ConvMambaNet: A Hybrid CNN-Mamba State Space Architecture for Accurate and Real-Time EEG Seizure Detection",
+      "authors": "Md. Nishan Khan, Kazi Shahriar Sanjid, Md. Tanzim Hossain, Asib Mostakim Fony, Istiak Ahmed, M. Monir Uddin",
+      "url": "https://arxiv.org/abs/2601.13234v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-19T17:08:34Z"
+    },
+    {
+      "title": "Democratizing Music Therapy: LLM-Based Automated EEG Analysis and Progress Tracking for Low-Cost Home Devices",
+      "authors": "Huixin Xue, Guangjun Xu, Shihong Ren, Xian Gao, Ruian Tie, Zhen Zhou, Hao Liu, Yue Gao",
+      "url": "https://arxiv.org/abs/2601.12280v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-18T06:40:56Z"
+    },
+    {
+      "title": "HCFT: Hierarchical Convolutional Fusion Transformer for EEG Decoding",
+      "authors": "Haodong Zhang, Jiapeng Zhu, Yitong Chen, Hongqi Li",
+      "url": "https://arxiv.org/abs/2601.12279v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-18T06:36:30Z"
+    },
     {
       "title": "Simple Models, Rich Representations: Visual Decoding from Primate Intracortical Neural Signals",
       "authors": "Matteo Ciferri, Matteo Ferrante, Nicola Toschi",
@@ -120,38 +352,6 @@
       "published": "2026-01-16T02:58:17Z"
     },
     {
-      "title": "Sporadic Creutzfeldt Jakob disease presenting with cerebral atrophy following traumatic brain injury mimicking hydrocephalus a case report and literature review",
-      "authors": "Chun Zeng, Dezhu Gao, Liang Wu",
-      "url": "https://arxiv.org/abs/2601.10663v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-15T18:31:29Z"
-    },
-    {
-      "title": "Learning from Brain Topography: A Hierarchical Local-Global Graph-Transformer Network for EEG Emotion Recognition",
-      "authors": "Yijin Zhou, Fu Li, Yi Niu, Boxun Fu, Huaning Wang, Lijian Zhang",
-      "url": "https://arxiv.org/abs/2601.10525v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-15T15:52:05Z"
-    },
-    {
-      "title": "Contrastive and Multi-Task Learning on Noisy Brain Signals with Nonlinear Dynamical Signatures",
-      "authors": "Sucheta Ghosh, Zahra Monfared, Felix Dietrich",
-      "url": "https://arxiv.org/abs/2601.08549v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-13T13:36:38Z"
-    },
-    {
-      "title": "Local-Global Feature Fusion for Subject-Independent EEG Emotion Recognition",
-      "authors": "Zheng Zhou, Isabella McEvoy, Camilo E. Valderrama",
-      "url": "https://arxiv.org/abs/2601.08094v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-13T00:27:01Z"
-    },
-    {
       "title": "No Title",
       "authors": "Unknown",
       "url": "",
@@ -160,5 +360,5 @@
       "published": ""
     }
   ],
-  "date": "2026-01-21"
+  "date": "2026-01-22"
 }

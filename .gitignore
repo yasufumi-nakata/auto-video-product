@@ -18,6 +18,8 @@ env/
 *.png
 *.jpg
 output/
+script.json
+scripts/
 
 # YouTube API credentials
 client_secret.json

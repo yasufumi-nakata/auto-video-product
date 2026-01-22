@@ -28,6 +28,20 @@ load_dotenv()
 TARGET_HOUR = 10  # 10:00 AM JST
 TARGET_MINUTE = 0
 
+def get_unique_path(path):
+    """Return a non-colliding path by adding a _vN suffix if needed."""
+    if not os.path.exists(path):
+        return path
+
+    base, ext = os.path.splitext(path)
+    for i in range(2, 100):
+        candidate = f"{base}_v{i}{ext}"
+        if not os.path.exists(candidate):
+            return candidate
+
+    timestamp = datetime.datetime.now().strftime("%H%M%S")
+    return f"{base}_{timestamp}{ext}"
+
 def cleanup_temp_files():
     """Clean up temporary files from previous runs."""
     extensions = ['.mp3', '.wav', '.png', '.mp4', '.json']
@@ -115,6 +129,8 @@ def generate_daily_video(test_mode=False, max_papers=None, target_date=None):
     video_path = f"daily_news_{today}.mp4"
     if test_mode:
         video_path = f"test_video_{today}.mp4"
+
+    video_path = get_unique_path(video_path)
 
     # Corrected arguments: image_path, audio_folder, output_filename, script_file
     final_video = create_podcast_video(thumbnail_path, "output_audio", video_path, script_file="script.json")
