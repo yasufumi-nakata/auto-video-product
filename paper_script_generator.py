@@ -92,7 +92,8 @@ DOI: {doi}
 - 不明な点は「要約からは不明」と明記する
 
 【読み上げやすさ】
-- 英字略語は初出で読み方をカタカナで併記する（例: EEG=イーイージー）
+- 英字略語や英単語は原則カタカナ表記に置き換える（例: EEG→イーイージー、Transformer→トランスフォーマー）
+- アルファベット表記が避けられない固有名詞は、本文ではカタカナ読みのみを使う
 - 記号や英単語は必要に応じて読みやすく言い換える
 
 【重要】出力は必ず以下のJSONフォーマットのみにしてください。
@@ -111,12 +112,12 @@ Format:
 
     paper_count = len(papers)
     if paper_count <= 4:
-        min_turns = 6
+        min_turns = 8
     elif paper_count <= 7:
-        min_turns = 5
+        min_turns = 7
     else:
-        min_turns = 4
-    target_minutes = min(12, max(8, paper_count + 3))
+        min_turns = 6
+    target_minutes = min(15, max(10, paper_count + 5))
 
     user_prompt = f"""以下の論文情報を元に、約{target_minutes}分程度の論文紹介トーク台本を作成してください。
 日付は{date_str}です。冒頭で日付と「今日のEEG論文まとめ」であることを紹介してください。
@@ -132,6 +133,7 @@ Format:
 - 論文の順番は入力順を厳守
 - 各論文につき最低{min_turns}往復（ずんだもん→めたんで1往復）
 - 1セリフは1〜2文で、読み上げやすい長さにする
+- 要点の言い換えや確認の合いの手を挟み、少し長めにする（要約にある範囲で）
 - 推測で断定しない
 
 {papers_text}
