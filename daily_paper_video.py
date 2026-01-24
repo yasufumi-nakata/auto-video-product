@@ -56,12 +56,12 @@ def cleanup_temp_files():
     if os.path.exists('output_audio'):
         shutil.rmtree('output_audio', ignore_errors=True)
 
-def wait_until_target_time(target_hour, target_minute):
+def wait_until_target_time(target_hour, target_minute, force_next_day=False):
     """Wait until the target time (JST)."""
     now = datetime.datetime.now()
     target = now.replace(hour=target_hour, minute=target_minute, second=0, microsecond=0)
 
-    if now >= target:
+    if force_next_day or now >= target:
         target = target + datetime.timedelta(days=1)
 
     wait_seconds = (target - now).total_seconds()
@@ -86,7 +86,10 @@ def generate_daily_video(test_mode=False, max_papers=None, target_date=None):
     # 1. Fetch Papers
     print(f"\n=== Phase 1: Fetching Papers for {today} ===")
 
-    all_papers = fetch_papers(max_results=10, days_back=1)
+    max_results = max_papers if max_papers and max_papers > 0 else 10
+    all_papers = fetch_papers(max_results=max_results, days_back=1)
+    if max_papers and max_papers > 0 and len(all_papers) > max_papers:
+        all_papers = all_papers[:max_papers]
 
     print(f"Total papers: {len(all_papers)}")
 
@@ -188,15 +191,24 @@ def run_once(test_mode=False, max_papers=None):
     cleanup_temp_files()
     return generate_daily_video(test_mode=test_mode, max_papers=max_papers)
 
+def run_once_tomorrow(test_mode=False, max_papers=None):
+    wait_seconds = wait_until_target_time(TARGET_HOUR, TARGET_MINUTE, force_next_day=True)
+    if wait_seconds > 0:
+        time.sleep(wait_seconds)
+    return run_once(test_mode=test_mode, max_papers=max_papers)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Daily Paper Video Generator Service")
     parser.add_argument("--test", action="store_true", help="Run in test mode (no upload, verbose output)")
     parser.add_argument("--once", action="store_true", help="Run once immediately and exit")
+    parser.add_argument("--tomorrow", action="store_true", help="Run once at the next 10:00 (tomorrow) and exit")
     parser.add_argument("--papers", type=int, help="Max number of papers to process (for testing)")
 
     args = parser.parse_args()
 
-    if args.once:
+    if args.tomorrow:
+        run_once_tomorrow(test_mode=args.test, max_papers=args.papers)
+    elif args.once:
         run_once(test_mode=args.test, max_papers=args.papers)
     else:
         run_service(test_mode=args.test)

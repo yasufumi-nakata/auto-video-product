@@ -22,6 +22,7 @@ const PYTHON_BIN = resolvePythonBin();
 
 const paperSchedule = parseTimeString(process.env.PAPER_TIME || "10:00");
 const githubSchedule = parseTimeString(process.env.GITHUB_TIME || "11:00");
+const paperMaxPapers = parsePositiveInt(process.env.PAPER_MAX_PAPERS);
 
 const tasks = {
   paper: {
@@ -44,6 +45,9 @@ const tasks = {
 
 if (process.env.PAPER_TEST_MODE === "1") {
   tasks.paper.args.push("--test");
+}
+if (paperMaxPapers) {
+  tasks.paper.args.push("--papers", String(paperMaxPapers));
 }
 if (process.env.GITHUB_TEST_MODE === "1") {
   tasks.github.args.push("--test");
@@ -272,6 +276,17 @@ function parseTimeString(text) {
   const hour = Math.min(Math.max(parseInt(match[1], 10), 0), 23);
   const minute = Math.min(Math.max(parseInt(match[2], 10), 0), 59);
   return { hour, minute };
+}
+
+function parsePositiveInt(value) {
+  if (!value) {
+    return null;
+  }
+  const num = parseInt(value, 10);
+  if (!Number.isFinite(num) || num <= 0) {
+    return null;
+  }
+  return num;
 }
 
 function loadState() {
