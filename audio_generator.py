@@ -8,6 +8,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 VOICEVOX_URL = os.getenv("VOICEVOX_BASE_URL", "http://127.0.0.1:50021")
+DEFAULT_SPEAKER_NAME = os.getenv("VOICEVOX_SPEAKER_NAME", "青山龍星")
+try:
+    DEFAULT_SPEAKER_ID = int(os.getenv("VOICEVOX_SPEAKER_ID", "3"))
+except ValueError:
+    DEFAULT_SPEAKER_ID = 3
 
 # 話者ID定義
 # VOICEVOXアプリのバージョンや設定によりますが、標準的なIDを使用します。
@@ -21,7 +26,8 @@ SPEAKERS = {
 # ファイル名用の英語マッピング (日本語ファイル名を回避)
 SPEAKER_EN_MAP = {
     "ずんだもん": "zundamon",
-    "四国めたん": "metan"
+    "四国めたん": "metan",
+    "青山龍星": "aoyama_ryusei"
 }
 
 ABBREVIATION_READINGS = [
@@ -53,20 +59,82 @@ ABBREVIATION_PATTERNS = [
     for abbr, reading in ABBREVIATION_READINGS
 ]
 
+HONORIFIC_SPLIT_PATTERN = re.compile(
+    r"(です|ます|ございます|いたします|ください|下さい)[/／・](です|ます|ございます|いたします|ください|下さい)"
+)
+
+SPEAKER_ID_CACHE = None
+
 def normalize_tts_text(text):
     normalized = text
+    normalized = HONORIFIC_SPLIT_PATTERN.sub(r"\1、\2", normalized)
     for pattern, reading in ABBREVIATION_PATTERNS:
         normalized = pattern.sub(reading, normalized)
     normalized = normalized.replace("/", "スラッシュ")
+    normalized = normalized.replace("／", "スラッシュ")
     return normalized
 
-def generate_audio_file(text, speaker_name, output_filename):
+def pick_default_style_id(styles):
+    for style in styles:
+        if style.get("name") == "ノーマル":
+            return style.get("id")
+    if styles:
+        return styles[0].get("id")
+    return None
+
+def load_voicevox_speakers():
+    global SPEAKER_ID_CACHE
+    if SPEAKER_ID_CACHE is not None:
+        return SPEAKER_ID_CACHE
+
+    speaker_map = {}
+    try:
+        res = requests.get(f"{VOICEVOX_URL}/speakers", timeout=10)
+        res.raise_for_status()
+        data = res.json()
+        for speaker in data:
+            name = speaker.get("name")
+            styles = speaker.get("styles", [])
+            style_id = pick_default_style_id(styles)
+            if name and style_id is not None:
+                speaker_map[name] = style_id
+    except Exception as e:
+        print(f"Warning: Could not fetch VOICEVOX speakers: {e}")
+
+    SPEAKER_ID_CACHE = speaker_map
+    return speaker_map
+
+def resolve_speaker_id(speaker_name):
+    if not speaker_name:
+        speaker_name = DEFAULT_SPEAKER_NAME
+
+    if speaker_name in SPEAKERS:
+        return SPEAKERS[speaker_name]
+
+    speaker_map = load_voicevox_speakers()
+    if speaker_name in speaker_map:
+        return speaker_map[speaker_name]
+
+    if speaker_name != DEFAULT_SPEAKER_NAME:
+        print(f"Warning: Speaker '{speaker_name}' not found. Using default speaker ID {DEFAULT_SPEAKER_ID}.")
+    return DEFAULT_SPEAKER_ID
+
+def safe_speaker_filename(speaker_name, speaker_id):
+    if speaker_name in SPEAKER_EN_MAP:
+        return SPEAKER_EN_MAP[speaker_name]
+
+    ascii_name = re.sub(r"[^A-Za-z0-9]+", "_", speaker_name or "").strip("_").lower()
+    if ascii_name:
+        return ascii_name
+    return f"speaker_{speaker_id}"
+
+def generate_audio_file(text, speaker_name, output_filename, speaker_id=None):
     """
     VOICEVOX APIを使ってテキストから音声ファイルを生成する。
     1. audio_query を作成
     2. synthesis で音声合成
     """
-    speaker_id = SPEAKERS.get(speaker_name, 3) # デフォルトはずんだもん
+    speaker_id = speaker_id if speaker_id is not None else resolve_speaker_id(speaker_name)
     tts_text = normalize_tts_text(text)
 
     # 1. Query Creation
@@ -118,15 +186,16 @@ def process_script(script_file="script.json", output_dir="output_audio"):
     audio_files = []
 
     for i, line in enumerate(dialogues):
-        speaker = line["speaker"]
-        text = line["text"]
+        speaker = line.get("speaker") or DEFAULT_SPEAKER_NAME
+        text = line.get("text", "")
+        speaker_id = resolve_speaker_id(speaker)
 
         # 安全なファイル名を生成
-        safe_speaker = SPEAKER_EN_MAP.get(speaker, "unknown")
+        safe_speaker = safe_speaker_filename(speaker, speaker_id)
         filename = os.path.join(output_dir, f"{i:03d}_{safe_speaker}.wav")
 
         print(f"[{i+1}/{len(dialogues)}] Generating {speaker}: {text[:20]}...")
-        success = generate_audio_file(text, speaker, filename)
+        success = generate_audio_file(text, speaker, filename, speaker_id=speaker_id)
 
         if success:
             audio_files.append(filename)

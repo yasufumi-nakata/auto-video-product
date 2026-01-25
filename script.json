@@ -1,320 +1,304 @@
 {
-  "title": "2026-01-22 今日のEEG論文まとめ",
+  "title": "2026年1月25日 EEG論文まとめ",
   "dialogue": [
     {
-      "speaker": "ずんだもん",
-      "text": "2026年1月22日、今日のEEG論文まとめです。"
+      "speaker": "青山龍星",
+      "text": "2026年1月25日、本日はEEG論文まとめにようこそ。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "今日もごきげんよう。さっそく、最新のEEG研究を紐解いていきましょう。"
+      "speaker": "青山龍星",
+      "text": "今日のテーマは、最新のEEG研究を10件紹介し、それぞれの背景や手法、結果と課題について掘り下げます。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "まずは第1論文、モバイルEEGで視聴覚環境の注意追跡をやってるんだ。"
+      "speaker": "青山龍星",
+      "text": "それでは、早速最初の論文からお話ししましょう。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、従来の注意追跡研究が実験室限定で音声のみだった点だ。"
+      "speaker": "青山龍星",
+      "text": "【論文1】『Region-aware Spatiotemporal Modeling with Collaborative Domain Generalization for Cross-Subject EEG Emotion Recognition』です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、日常的な二人話し相手の状況で注意を追跡できるか試すことだ。"
+      "speaker": "青山龍星",
+      "text": "背景として、被験者間の変動が大きく、感情認識モデルの汎化性能を低下させる問題があります。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は44電極の頭皮EEGと20cEEGridを用い、持ち運び可能なセットでデータ収集。"
+      "speaker": "青山龍星",
+      "text": "研究の目的は、空間・時間両面での表現を統合し、被験者差を抑えることです。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、P2ピークで注視と無視の差が有意だったんだ。"
+      "speaker": "青山龍星",
+      "text": "手法は、機能領域分割に基づく地域レベルの空間表現と多尺度時間モデリングを組み合わせ、さらに協調ドメイン汎化戦略を導入しています。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "しかも、注意切り替えと自然会話でも同様の差が観測された。"
+      "speaker": "青山龍星",
+      "text": "主な結果として、従来手法よりも高い感情認識精度を達成し、被験者差の抑制に成功しました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "限界は、切り替え時の性能差が小さかった点だ。"
+      "speaker": "青山龍星",
+      "text": "限界としては、データセットが限定的であり、実世界での汎用性を検証する必要があります。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "今後は、より複雑な会話シナリオでの検証が必要だ。"
+      "speaker": "青山龍星",
+      "text": "次に、論文2を見ていきましょう。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "次は第2論文、Auditory Brain Passage Retrievalだ。"
+      "speaker": "青山龍星",
+      "text": "【論文2】『Neural Tracking of Sustained Attention, Attention Switching, and Natural Conversation in Audiovisual Environments using Mobile EEG』です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、クエリ形成が情報検索で難しい点にある。"
+      "speaker": "青山龍星",
+      "text": "背景は、日常のコミュニケーションが多感覚でありながら、注意追跡研究は主にラボ環境で行われている点です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、視覚刺激だけでなく聴覚EEGを使って検索性能を上げることだ。"
+      "speaker": "青山龍星",
+      "text": "目的は、モバイルEEGを用いて実際の視聴覚環境で注意状態を追跡することです。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、双方向エンコーダと4種類のプーリングを組み合わせたモデル。"
+      "speaker": "青山龍星",
+      "text": "手法は、44頭皮電極と20cEEGridを装着し、三つの条件（持続注意・切替注意・自然会話）でTRF解析と選択的注意分類を実施しました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、聴覚EEGが視覚より優れていて、CLSプーリングでクロスセンサ訓練が31%改善したんだ。"
+      "speaker": "青山龍星",
+      "text": "結果は、P2ピークに注意差が見られたものの、切替条件と持続条件で性能差は小さかったという点です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、データセットが限定的である点。"
+      "speaker": "青山龍星",
+      "text": "課題としては、音声と映像の統合モデルがまだ不十分であり、さらなる検証が必要です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "今後は、より大規模な聴覚データで検証が必要だ。"
+      "speaker": "青山龍星",
+      "text": "論文3に移ります。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第3論文、RL-BioAugでデータ拡張を学習させるんだ。"
+      "speaker": "青山龍星",
+      "text": "【論文3】『Auditory Brain Passage Retrieval: Cross-Sensory EEG Training for Neural Information Retrieval』です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、EEGの非定常性がランダム拡張を不適切にする点だ。"
+      "speaker": "青山龍星",
+      "text": "背景は、情報検索におけるクエリ構築が難しいという点で、BPRはEEGを直接パッセージ表現にマッピングする手法です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、ラベル効率的なRLエージェントで最適拡張を見つけることだ。"
+      "speaker": "青山龍星",
+      "text": "目的は、視覚刺激だけでなく聴覚EEGを用いたBPRの有効性と、クロスセンサートレーニングの効果を検証することです。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、10%のラベルでエージェントを訓練し、タスクごとに最適戦略を選択。"
+      "speaker": "青山龍星",
+      "text": "手法は、ダブルエンコーダと四種類のプーリング（CLS・平均・最大・マルチベクター）を用い、AliceとNieuwlandデータセットで実験しました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、睡眠ステージで62%の時間マスク、発作検出では77%がCrop&Resizeだった。"
+      "speaker": "青山龍星",
+      "text": "主な結果は、聴覚EEGが視覚EEGよりも優れ、CLSプーリングでクロスセンサートレーニングが31％のMRR向上を示したことです。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "性能は、ランダムより9.69%と8.80%改善した。"
+      "speaker": "青山龍星",
+      "text": "限界としては、データ量が少なく、実運用での汎用性を確認する必要があります。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、RLエージェントの計算コストが高い点だ。"
+      "speaker": "青山龍星",
+      "text": "続いて論文4です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "将来は、より軽量なポリシー学習が課題だ。"
+      "speaker": "青山龍星",
+      "text": "【論文4】『RL-BioAug: Label-Efficient Reinforcement Learning for Self-Supervised EEG Representation Learning』です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第4論文、Audio Outperforms Text for Visual Decoding。"
+      "speaker": "青山龍星",
+      "text": "背景は、対照学習でのデータ拡張がEEGでは情報を失いやすいという点です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、視覚情報のデコーディングがテキスト表現に依存していた点だ。"
+      "speaker": "青山龍星",
+      "text": "目的は、少量のラベル付きデータで最適な拡張ポリシーを学習し、自己教師あり表現学習を強化することです。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、音声表現を用いてゼロショットデコーディングの精度向上だ。"
+      "speaker": "青山龍星",
+      "text": "手法は、RLエージェントが拡張戦略（タイムマスク・クロップ＆リサイズ等）を選択し、10％のラベルでポリシーを学習します。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、音声と視覚をマルチモーダルに結合したアラインメントモデル。"
+      "speaker": "青山龍星",
+      "text": "結果は、Sleep-EDFXで9.69％、CHB-MITで8.80％のMacro-F1向上を示し、タスクごとに最適戦略が選択されました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、音声がテキストより高精度で計算効率も良かった。"
+      "speaker": "青山龍星",
+      "text": "課題は、RLエージェントの収束速度と計算コストが高い点です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、音声データの取得コストが高い点だ。"
+      "speaker": "青山龍星",
+      "text": "次に論文5へ。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "今後は、音声収集の自動化が必要だ。"
+      "speaker": "青山龍星",
+      "text": "【論文5】『Audio Outperforms Text for Visual Decoding』です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第5論文、EEG-Titansで長期発作予測をやってるんだ。"
+      "speaker": "青山龍星",
+      "text": "背景は、視覚情報の脳デコーディングでテキストベースのゼロショットが主流だが、聴覚語音がより適切かもしれないという点です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、発作予測が長時間の前兆を捉えることが難しい点だ。"
+      "speaker": "青山龍星",
+      "text": "目的は、聴覚とテキストの両方を用いたゼロショット視覚デコーディング性能を比較することです。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、長期文脈を保持しつつ短期異常も検知するモデル作成だ。"
+      "speaker": "青山龍星",
+      "text": "手法は、脳-視覚-聴覚マルチモーダルアラインメントモデルを構築し、音声表現で語義をエンコードします。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、スライディングウィンドウ注意とリカレントメモリを組み合わせたデュアルブランチ。"
+      "speaker": "青山龍星",
+      "text": "結果は、聴覚モダリティがテキストよりも高いデコーディング精度と計算効率を示しました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、18人で平均99.46%の感度を達成。"
+      "speaker": "青山龍星",
+      "text": "限界は、データセットが限定的であり、他の視覚タスクで検証する必要があります。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、ノイズ多いデータで誤検知が増える点だ。"
+      "speaker": "青山龍星",
+      "text": "論文6に移ります。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "対策として、階層的文脈戦略でFPRを0.00に近づけた。"
+      "speaker": "青山龍星",
+      "text": "【論文6】『EEG-Titans: Long-Horizon Seizure Forecasting via Dual-Branch Attention and Neural Memory』です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第6論文、ConvMambaNetでリアルタイム発作検出を実現。"
+      "speaker": "青山龍星",
+      "text": "背景は、発作予測が長時間の前兆を捉える必要がある一方で、短期パターンと長期文脈を同時に扱うことが難しい点です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、従来のCNNが長期依存を捉えにくい点だ。"
+      "speaker": "青山龍星",
+      "text": "目的は、短期注意と長期メモリを組み合わせて発作予測性能を向上させることです。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、CNNとMambaSSMを融合して時系列特徴を強化することだ。"
+      "speaker": "青山龍星",
+      "text": "手法は、スライディングウィンドウ注意と再帰型メモリパスを統合した双枝アーキテクチャです。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、Mamba-SSMブロックをCNNに埋め込み、空間・長期時間特性を同時取得。"
+      "speaker": "青山龍星",
+      "text": "結果は、CHB-MITで平均セグメントレベル感度99.46％を達成し、ノイズが多い被験者ではFPR/hを0.00に抑えました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、CHB-MITで99%の精度を達成。"
+      "speaker": "青山龍星",
+      "text": "課題は、長時間データの計算負荷と臨床での実装難度です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、クラス不均衡への対処が難しい点だ。"
+      "speaker": "青山龍星",
+      "text": "次は論文7です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "しかし、実装はリアルタイムで可能だ。"
+      "speaker": "青山龍星",
+      "text": "【論文7】『ConvMambaNet: A Hybrid CNN-Mamba State Space Architecture for Accurate and Real-Time EEG Seizure Detection』です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第7論文、LLMで音楽療法のEEG解析を自動化。"
+      "speaker": "青山龍星",
+      "text": "背景は、EEGの時間的複雑性により自動検知が困難である点です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、専門家解釈が必要なEEG解析のハードルだ。"
+      "speaker": "青山龍星",
+      "text": "目的は、CNNとMamba SSMを組み合わせて空間・長期時間特徴を同時に抽出することです。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、LLMで解析報告と音楽提案を自動生成することだ。"
+      "speaker": "青山龍星",
+      "text": "手法は、Mamba-SSMブロックをCNNに埋め込み、長時間依存性を捉えます。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、信号処理モジュールとLLM推論エージェントを統合。"
+      "speaker": "青山龍星",
+      "text": "結果は、CHB-MITで99％の精度を示し、クラス不均衡にも強い性能でした。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、非専門家でも理解しやすい報告が得られた。"
+      "speaker": "青山龍星",
+      "text": "限界は、リアルタイム実装における計算効率とデータ量の制約です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、LLMの解釈精度とデータ量が課題だ。"
+      "speaker": "青山龍星",
+      "text": "論文8に進みます。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "今後は、より多様な音楽データで検証が必要だ。"
+      "speaker": "青山龍星",
+      "text": "【論文8】『Democratizing Music Therapy: LLM-Based Automated EEG Analysis and Progress Tracking for Low-Cost Home Devices』です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第8論文、HCFTでEEGデコーディングを軽量化。"
+      "speaker": "青山龍星",
+      "text": "背景は、音楽療法が家庭で普及するにはEEG解析の専門知識が必要だという障壁があります。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、従来のTransformerが計算量過多だった点だ。"
+      "speaker": "青山龍星",
+      "text": "目的は、LLMを用いてEEGと心拍データから解釈可能なレポートと音楽推奨を自動生成することです。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、双方向CNNと階層Transformerで多尺度表現を学習することだ。"
+      "speaker": "青山龍星",
+      "text": "手法は、信号処理モジュールとLLM推論エージェントを統合し、事後解析に焦点を当てます。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、時間・時空間畳み込みブランチとCross-Attentionで統合。"
+      "speaker": "青山龍星",
+      "text": "結果は、非専門家が自分の生理状態を理解し、治療効果を追跡できるプロトタイプが実現しました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、BCI CompetitionとCHB-MITで高精度を示した。"
+      "speaker": "青山龍星",
+      "text": "課題は、LLMの解釈性と個人差に対する適応性です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、Dynamic Tanh正規化の安定性が完全ではない点だ。"
+      "speaker": "青山龍星",
+      "text": "続いて論文9です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "将来は、さらに軽量化と汎用性向上が課題だ。"
+      "speaker": "青山龍星",
+      "text": "【論文9】『HCFT: Hierarchical Convolutional Fusion Transformer for EEG Decoding』です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第9論文、簡単モデルで視覚情報を脳から復元。"
+      "speaker": "青山龍星",
+      "text": "背景は、EEGデコーディングで複雑な時間・周波数・空間特徴を統合する必要がある点です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、脳活動から画像を生成する難しさだ。"
+      "speaker": "青山龍星",
+      "text": "目的は、軽量で汎用的なデコーディングフレームワークを提案することです。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、時系列注意と浅いMLPで高精度を達成することだ。"
+      "speaker": "青山龍星",
+      "text": "手法は、双枝畳み込みエンコーダと階層的Transformerブロックを組み合わせ、Dynamic Tanh正規化で学習安定性を向上させます。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、THINGS Ventral Stream Spiking Datasetを用い、Temporal Attention+MLPで70%のTop-1取得。"
+      "speaker": "青山龍星",
+      "text": "結果は、BCI Competition IV-2bとCHB-MITでイベント関連分類・連続予測の両方で高性能を示しました。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、単純モデルが複雑なモデルを上回った。"
+      "speaker": "青山龍星",
+      "text": "限界は、モデルサイズと計算コストのバランスです。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "限界は、データスケールでの減衰が観測された点だ。"
+      "speaker": "青山龍星",
+      "text": "最後に論文10ですが、要約がないため詳細は不明です。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "今後は、生成パイプラインの改良が必要だ。"
+      "speaker": "青山龍星",
+      "text": "それでは、まとめに入ります。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "第10論文、うつ病検出にCNN-GRUとMRMRを組み合わせた。"
+      "speaker": "青山龍星",
+      "text": "今回紹介した10件は、感情認識から注意追跡、情報検索、発作予測までEEGの応用範囲が広いことを示しています。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "背景は、主観的診断の限界だ。"
+      "speaker": "青山龍星",
+      "text": "共通して言えるのは、データ拡張やマルチモーダル統合、長期記憶の活用が性能向上に大きく寄与している点です。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "目的は、EEGから客観的うつ病判定を行うことだ。"
+      "speaker": "青山龍星",
+      "text": "しかし、実世界での汎用性や計算効率、専門知識のハードルといった課題も残っています。"
     },
     {
-      "speaker": "四国めたん",
-      "text": "手法は、CNNで空間特徴を抽出しGRUで時間情報を統合。"
+      "speaker": "青山龍星",
+      "text": "次回は、脳波を使った認知障害の診断やリハビリテーションに焦点を当てた論文を紹介します。"
     },
     {
-      "speaker": "ずんだもん",
-      "text": "結果は、MRMRで特徴選択後に高い分類精度を示した。"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "限界は、データ量と多様性が不足している点だ。"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "将来は、より大規模な多施設データで検証が必要だ。"
-    },
-    {
-      "speaker": "ずんだもん",
-      "text": "最後に、未公開論文があるけど要約はないから不明だ。"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "それでは、今日のEEG論文まとめは以上です。"
-    },
-    {
-      "speaker": "ずんだもん",
-      "text": "次回もぜひお楽しみに。"
-    },
-    {
-      "speaker": "四国めたん",
-      "text": "ご清聴ありがとうございました。"
+      "speaker": "青山龍星",
+      "text": "ご清聴ありがとうございました。またお会いしましょう。"
     }
   ],
   "references": [
+    {
+      "title": "Region-aware Spatiotemporal Modeling with Collaborative Domain Generalization for Cross-Subject EEG Emotion Recognition",
+      "authors": "Weiwei Wu, Yueyang Li, Yuhu Shi, Weiming Zeng, Lang Qin, Yang Yang, Ke Zhou, Zhiguo Zhang, Wai Ting Siok, Nizhuan Wang",
+      "url": "https://arxiv.org/abs/2601.15615v1",
+      "doi": "",
+      "source": "arXiv",
+      "published": "2026-01-22T03:35:40Z"
+    },
     {
       "title": "Neural Tracking of Sustained Attention, Attention Switching, and Natural Conversation in Audiovisual Environments using Mobile EEG",
       "authors": "Johanna Wilroth, Oskar Keding, Martin A. Skoglund, Maria Sandsten, Martin Enqvist, Emina Alickovic",
@@ -380,22 +364,6 @@
       "published": "2026-01-18T06:36:30Z"
     },
     {
-      "title": "Simple Models, Rich Representations: Visual Decoding from Primate Intracortical Neural Signals",
-      "authors": "Matteo Ciferri, Matteo Ferrante, Nicola Toschi",
-      "url": "https://arxiv.org/abs/2601.11108v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-16T09:10:31Z"
-    },
-    {
-      "title": "Depression Detection Based on Electroencephalography Using a Hybrid Deep Neural Network CNN-GRU and MRMR Feature Selection",
-      "authors": "Mohammad Reza Yousefi, Hajar Ismail Al-Tamimi, Amin Dehghani",
-      "url": "https://arxiv.org/abs/2601.10959v1",
-      "doi": "",
-      "source": "arXiv",
-      "published": "2026-01-16T02:58:17Z"
-    },
-    {
       "title": "No Title",
       "authors": "Unknown",
       "url": "",
@@ -404,5 +372,5 @@
       "published": ""
     }
   ],
-  "date": "2026-01-22"
+  "date": "2026-01-25"
 }

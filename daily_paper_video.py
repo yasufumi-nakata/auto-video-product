@@ -86,7 +86,7 @@ def generate_daily_video(test_mode=False, max_papers=None, target_date=None):
     # 1. Fetch Papers
     print(f"\n=== Phase 1: Fetching Papers for {today} ===")
 
-    max_results = max_papers if max_papers and max_papers > 0 else 10
+    max_results = max_papers if max_papers and max_papers > 0 else None
     all_papers = fetch_papers(max_results=max_results, days_back=1)
     if max_papers and max_papers > 0 and len(all_papers) > max_papers:
         all_papers = all_papers[:max_papers]

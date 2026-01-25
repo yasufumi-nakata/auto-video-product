@@ -32,7 +32,7 @@ def main():
     print("\n=== Phase 3: Thumbnail Generation (Stable Diffusion) ===")
     # 脚本のタイトルを元にプロンプトを作成
     title = script.get("title", "Podcast Episode")
-    prompt = f"masterpiece, best quality, anime style, a radio studio with a cute green haired anime girl and a pink haired elegant anime girl talking, text title '{title}', microphone, on air sign, highly detailed, 4k"
+    prompt = f"masterpiece, best quality, anime style, a radio studio with a calm anime narrator speaking into a microphone, text title '{title}', on air sign, highly detailed, 4k"
     thumbnail_path = generate_thumbnail(prompt, "thumbnail.png")
     if not thumbnail_path:
         print("Failed to generate thumbnail.")

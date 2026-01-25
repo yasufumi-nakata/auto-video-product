@@ -6,7 +6,7 @@ EEG・脳波関連の論文を自動で取得し、AI生成のPodcast風解説�
 
 - **論文自動取得**: arXivとElsevier/Scopusから最新のEEG論文を自動取得
 - **AI台本生成**: LM Studioを使用してPodcast風の対話形式台本を自動生成
-- **音声合成**: VOICEVOXによる「ずんだもん」と「四国めたん」の音声生成
+- **音声合成**: VOICEVOXによる「青山龍星」の音声生成
 - **サムネイル生成**: Stable Diffusionによるアニメ風サムネイル自動生成
 - **動画編集**: MoviePyによる字幕付き動画の自動作成
 - **YouTube自動アップロード**: YouTube Data API v3による自動公開
@@ -45,6 +45,7 @@ LM_STUDIO_API_KEY=lm-studio
 
 # VOICEVOX
 VOICEVOX_BASE_URL=http://127.0.0.1:50021
+VOICEVOX_SPEAKER_NAME=青山龍星
 VOICEVOX_SPEAKER_ID=3
 
 # Elsevier/Scopus
@@ -90,6 +91,9 @@ python daily_paper_video.py --once --papers 5
 
 # テスト実行（アップロードなし、1回のみ）
 python daily_paper_video.py --once --test
+
+# 明日の10時に1回だけ実行
+python daily_paper_video.py --tomorrow
 ```
 
 ### 汎用トピックからの動画生成
@@ -142,8 +146,7 @@ graph LR
 
 | キャラクター | 役割 | 話者ID |
 |:---:|:---:|:---:|
-| ずんだもん | 好奇心旺盛なボケ役 | 3 |
-| 四国めたん | 知的なツッコミ・解説役 | 2 |
+| 青山龍星 | 落ち着いた解説役 | VOICEVOX側のIDに準拠 |
 
 ## ⚙️ 各モジュールの単体テスト
 

@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -8,6 +9,11 @@ load_dotenv()
 LM_STUDIO_URL = os.getenv("LM_STUDIO_BASE_URL", "http://localhost:1234/v1") + "/chat/completions"
 API_KEY = os.getenv("LM_STUDIO_API_KEY", "lm-studio")
 DEFAULT_MODEL = "openai/gpt-oss-20b"
+DEFAULT_SPEAKER_NAME = os.getenv("VOICEVOX_SPEAKER_NAME", "青山龍星")
+CJK_RANGE = r"\u3040-\u30ff\u3400-\u9fff"
+SPACE_BETWEEN_CJK = re.compile(rf"(?<=[{CJK_RANGE}0-9])\s+(?=[{CJK_RANGE}0-9])")
+SPACE_BETWEEN_CJK_ASCII = re.compile(rf"(?<=[{CJK_RANGE}])\s+(?=[A-Za-z0-9])")
+SPACE_BETWEEN_ASCII_CJK = re.compile(rf"(?<=[A-Za-z0-9])\s+(?=[{CJK_RANGE}])")
 
 
 def resolve_model():
@@ -31,40 +37,59 @@ def resolve_model():
 
     return DEFAULT_MODEL
 
+def normalize_dialogue_text(text):
+    if not text:
+        return ""
+    normalized = re.sub(r"\s+", " ", text).strip()
+    normalized = SPACE_BETWEEN_CJK.sub("", normalized)
+    normalized = SPACE_BETWEEN_CJK_ASCII.sub("", normalized)
+    normalized = SPACE_BETWEEN_ASCII_CJK.sub("", normalized)
+    normalized = re.sub(r"\s+([、。！？…])", r"\1", normalized)
+    normalized = re.sub(r"([「『（【])\s+", r"\1", normalized)
+    normalized = re.sub(r"\s+([」』）】])", r"\1", normalized)
+    return normalized
+
 def generate_script(topic_text):
     """
     ニュースや記事のテキストを受け取り、Podcast風の台本（JSON形式）を生成する。
     """
     
-    system_prompt = """
+    system_prompt = f"""
     あなたは人気Podcastの構成作家です。
-    提供されたニュースやテキストを元に、リスナーが親しみやすく、かつ知的好奇心を刺激されるような「対話形式の台本」を作成してください。
+    提供されたニュースやテキストを元に、リスナーが親しみやすく、かつ知的好奇心を刺激されるような「一人語りの台本」を作成してください。
     
-    登場人物は2人です：
-    1. 「ずんだもん」: 好奇心旺盛で少し生意気なボケ役。語尾は「〜なのだ」「〜のだ」。
-    2. 「四国めたん」: 冷静で知的なツッコミ役・解説役。丁寧な口調。
+    話者は1人です：
+    1. 「{DEFAULT_SPEAKER_NAME}」: 落ち着いた丁寧語で話すナレーター。
 
     【正確性ルール】
     - 元テキストにない情報は推測で断定しない
     - 不明な点は「元テキストからは不明」と明記する
+
+    【敬語の読み上げ】
+    - です・ます調で自然に話す
+    - スラッシュや括弧で敬語を省略しない
 
     【読み上げやすさ】
     - 英字略語や英単語は原則カタカナ表記に置き換える（例: AI→エーアイ、Transformer→トランスフォーマー）
     - アルファベット表記が避けられない固有名詞は、本文ではカタカナ読みのみを使う
     - 記号や英単語は必要に応じて読みやすく言い換える
 
+    【表記ルール】
+    - 日本語は通常の表記（漢字・ひらがな・カタカナ）で、ひらがなの分かち書きはしない
+    - 不要な空白を入れない
+
     【重要】出力は必ず以下のJSONフォーマットのみにしてください。
     Markdownのコードブロック(```json)や、冒頭・末尾の挨拶、解説は一切不要です。
     JSONの文法エラー（カンマ漏れ、閉じていない引用符など）がないように注意してください。
     
     Format:
-    {
+    {{
       "title": "エピソードのタイトル",
       "dialogue": [
-        {"speaker": "ずんだもん", "text": "ねえねえ、めたん、これ知ってる？"},
-        {"speaker": "四国めたん", "text": "あら、また何か見つけたのですか？"}
+        {{"speaker": "{DEFAULT_SPEAKER_NAME}", "text": "導入の台詞です。"}},
+        {{"speaker": "{DEFAULT_SPEAKER_NAME}", "text": "続けて解説します。"}}
       ]
-    }
+    }}
     """
 
     user_prompt = f"""以下のテキストを元に、約5〜6分程度の解説トーク台本を作成してください。
@@ -76,7 +101,7 @@ def generate_script(topic_text):
 - 影響や今後の注目点（元テキストにある範囲）
 - まとめ
 
-会話は少し長めにし、要点の言い換えや確認の合いの手を挟んでください。
+台本は少し長めにし、要点の言い換えや独り言の確認を挟んでください。
 
 【元テキスト】
 {topic_text}"""
@@ -122,6 +147,16 @@ def generate_script(topic_text):
                 content = content[start_idx : end_idx + 1]
             
             script_data = json.loads(content)
+            if isinstance(script_data.get("dialogue"), list):
+                cleaned_dialogue = []
+                for line in script_data["dialogue"]:
+                    if not isinstance(line, dict):
+                        continue
+                    speaker = line.get("speaker") or DEFAULT_SPEAKER_NAME
+                    text = normalize_dialogue_text(line.get("text", ""))
+                    if text:
+                        cleaned_dialogue.append({"speaker": speaker, "text": text})
+                script_data["dialogue"] = cleaned_dialogue
             return script_data
 
         except json.JSONDecodeError:

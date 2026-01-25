@@ -21,6 +21,7 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
 
     # 字幕情報を読み込み
     subtitles = []
+    show_speaker = False
     if script_file and os.path.exists(script_file):
         with open(script_file, "r", encoding="utf-8") as f:
             script_data = json.load(f)
@@ -31,6 +32,8 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
                     "speaker": d["speaker"],
                     "text": d["text"]
                 })
+        unique_speakers = {sub.get("speaker") for sub in subtitles if sub.get("speaker")}
+        show_speaker = len(unique_speakers) > 1
 
     # 音声クリップを作成し、各クリップの開始時刻を記録
     audio_clips = []
@@ -65,7 +68,10 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
 
                 # 長いテキストは改行
                 wrapped_text = wrap_text(text, max_chars=30)
-                display_text = f"【{speaker}】\n{wrapped_text}"
+                if show_speaker:
+                    display_text = f"【{speaker}】\n{wrapped_text}"
+                else:
+                    display_text = wrapped_text
 
                 try:
                     # 字幕テキストクリップを作成

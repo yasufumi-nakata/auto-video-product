@@ -1,0 +1,156 @@
+{
+  "title": "イーイージーフロー開発日記 2026年1月25日",
+  "dialogue": [
+    {
+      "speaker": "青山龍星",
+      "text": "皆さま、こんにちは。2026年1月25日、本日はイーイージーフロー開発日記をお届けします。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "今日のテーマは、イーイージーフローが取り組む学術的課題とその議論です。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "まずは、意識理論の選択と「Adversarial Collaboration」の解釈についてです。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "プロジェクトではIIT 4.0とGNWTを統合し、2025年のCogitate Consortiumの結果に基づきFEPへシフトしました。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "しかし、批判的に見るとIITやGNWTは「経験そのもの」を説明する理論であり、FEPは機能的プロセスを重視します。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "このカテゴリーの違いを代替案として扱うことは、論理的飛躍があると指摘されています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "さらに、Laukkonenら（2025）を引用した反実仮想的等価性の検証可能性についても、具体策が欠如しているとされています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "次にEEGソースイメージング（ESI）の不確実性の扱いを見てみましょう。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "`02_source_imaging.py`ではFengら（2025）のBlock-Champagneフレームワークを採用し、不確実性定量化（UQ）を導入しています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "しかし、実装では不確実性をMNEとdSPMの比として扱っており、理論的根拠とのギャップが指摘されています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "この点は、実際にEEGとMEGを統合する際の空間分解能限界や計算量的爆発に対処するために重要です。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "さらに、提案書では連続時間モデルへの拡張が議論されています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "具体的にはNeural ODEsを導入し、脳活動を微分方程式として表現することで離散時間の誤差を減らすと提案されています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "このアプローチは、EEG（ミリ秒）とfMRI（秒）の異なるタイムスケールを統合する際にも自然です。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "また、VR環境下での計測に関しては信号品質保証とハードウェア非依存プロトコルが重要視されています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "提案書ではBIDSへの準拠やリアルタイム同期アーキテクチャの最適化、VR特有のアーティファクト除去が挙げられています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "これらはモバイルブレイン/ボディイメージング（MoBI）の普及に伴い、計測環境が実験室を離れた場面で不可欠です。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "さらに、ネットワーク神経科学の観点からはwPLIや因果性推定（STE）といった接続性解析手法が提案されています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "これにより、体積伝導問題を克服し、脳領域間の情報フローをより正確に捉えることが期待されます。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "コミュニティ内では、これらの提案に対して賛否が分かれています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "一部の研究者は連続時間モデルを導入することで、計算コストが増大すると懸念しています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "対照的に、他の研究者は離散時間モデルが生物学的リアリティを欠くと主張し、Neural ODEsの採用を支持しています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "また、意識理論の統合に関しては、FEPとIIT・GNWTを同列に扱うことの妥当性が議論されています。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "この議論は、意識の「経験」と「機能」の区別をどう捉えるかという哲学的問題にまで及びます。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "今後の展望としては、これらの議論を踏まえた上で実装と理論の整合性を高めることが課題です。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "特に、信号品質保証と不確実性定量化の標準化が、再現可能な科学的発見を促進する鍵となります。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "次回は、具体的な実装例とそれがどのように研究成果へ結びつくかを掘り下げていきます。"
+    },
+    {
+      "speaker": "青山龍星",
+      "text": "それでは、また次回お会いしましょう。ご清聴ありがとうございました。"
+    }
+  ],
+  "references": [
+    {
+      "type": "Issue",
+      "number": 49,
+      "title": "Technical/Scientific Rigor Improvement: Bayesian ESI Implementation and Consciousness Theory Integration",
+      "url": "https://github.com/yasufumi-nakata/eegflow/issues/49",
+      "author": "yasufumi-nakata"
+    },
+    {
+      "type": "Issue",
+      "number": 46,
+      "title": "提案",
+      "url": "https://github.com/yasufumi-nakata/eegflow/issues/46",
+      "author": "yasufumi-nakata"
+    },
+    {
+      "type": "Issue",
+      "number": 48,
+      "title": "47提案",
+      "url": "https://github.com/yasufumi-nakata/eegflow/issues/48",
+      "author": "yasufumi-nakata"
+    },
+    {
+      "type": "Issue",
+      "number": 47,
+      "title": "46提案",
+      "url": "https://github.com/yasufumi-nakata/eegflow/issues/47",
+      "author": "yasufumi-nakata"
+    },
+    {
+      "type": "Issue",
+      "number": 45,
+      "title": "提案",
+      "url": "https://github.com/yasufumi-nakata/eegflow/issues/45",
+      "author": "yasufumi-nakata"
+    }
+  ],
+  "date": "2026-01-25",
+  "repo": "yasufumi-nakata/eegflow"
+}
