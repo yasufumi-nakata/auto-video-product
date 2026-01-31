@@ -7,6 +7,7 @@ import requests
 import json
 import re
 from dotenv import load_dotenv
+from lm_studio_utils import ensure_lm_studio_ready
 
 load_dotenv()
 
@@ -14,11 +15,15 @@ LM_STUDIO_URL = os.getenv("LM_STUDIO_BASE_URL", "http://localhost:1234/v1") + "/
 API_KEY = os.getenv("LM_STUDIO_API_KEY", "lm-studio")
 DEFAULT_MODEL = "openai/gpt-oss-20b"
 SUMMARY_MAX_CHARS = int(os.getenv("PAPER_SUMMARY_MAX_CHARS", "1200"))
+DIALOGUE_MAX_CHARS = int(os.getenv("PAPER_DIALOGUE_MAX_CHARS", "900"))
 DEFAULT_SPEAKER_NAME = os.getenv("VOICEVOX_SPEAKER_NAME", "青山龍星")
 CJK_RANGE = r"\u3040-\u30ff\u3400-\u9fff"
 SPACE_BETWEEN_CJK = re.compile(rf"(?<=[{CJK_RANGE}0-9])\s+(?=[{CJK_RANGE}0-9])")
 SPACE_BETWEEN_CJK_ASCII = re.compile(rf"(?<=[{CJK_RANGE}])\s+(?=[A-Za-z0-9])")
 SPACE_BETWEEN_ASCII_CJK = re.compile(rf"(?<=[A-Za-z0-9])\s+(?=[{CJK_RANGE}])")
+SENTENCE_SPLIT_RE = re.compile(r"(?<=[。！？!?])")
+SOFT_BREAK_CHARS = ["、", "，", ",", "・", "／", "/", " ", "　", "；", ";", ":", "："]
+ASCII_LETTER_RE = re.compile(r"[A-Za-z]")
 
 
 def resolve_model():
@@ -65,6 +70,143 @@ def normalize_dialogue_text(text):
     return normalized
 
 
+def split_long_text(text, max_chars):
+    if not text:
+        return []
+    text = text.strip()
+    if max_chars <= 0 or len(text) <= max_chars:
+        return [text]
+
+    sentences = [s for s in SENTENCE_SPLIT_RE.split(text) if s]
+    chunks = []
+    current = ""
+
+    for sentence in sentences:
+        if not current:
+            if len(sentence) <= max_chars:
+                current = sentence
+            else:
+                chunks.extend(force_split(sentence, max_chars))
+        else:
+            if len(current) + len(sentence) <= max_chars:
+                current += sentence
+            else:
+                chunks.append(current)
+                if len(sentence) <= max_chars:
+                    current = sentence
+                else:
+                    chunks.extend(force_split(sentence, max_chars))
+                    current = ""
+
+    if current:
+        chunks.append(current)
+
+    return [c.strip() for c in chunks if c.strip()]
+
+
+def force_split(text, max_chars):
+    remaining = text.strip()
+    chunks = []
+    while remaining and len(remaining) > max_chars:
+        cut = -1
+        for ch in SOFT_BREAK_CHARS:
+            idx = remaining.rfind(ch, 0, max_chars + 1)
+            if idx > cut:
+                cut = idx
+        if cut <= 0:
+            cut = max_chars
+        chunk = remaining[:cut].strip()
+        if chunk:
+            chunks.append(chunk)
+        remaining = remaining[cut:].strip()
+    if remaining:
+        chunks.append(remaining)
+    return chunks
+
+
+def split_dialogue_lines(dialogue, max_chars):
+    if not dialogue:
+        return []
+    if max_chars <= 0:
+        return dialogue
+    split_lines = []
+    for line in dialogue:
+        if not isinstance(line, dict):
+            continue
+        speaker = line.get("speaker") or DEFAULT_SPEAKER_NAME
+        text = normalize_dialogue_text(line.get("text", ""))
+        for chunk in split_long_text(text, max_chars):
+            normalized_chunk = normalize_dialogue_text(chunk)
+            if normalized_chunk:
+                split_lines.append({"speaker": speaker, "text": normalized_chunk})
+    return split_lines
+
+
+def rewrite_english_dialogue(dialogue):
+    targets = []
+    for idx, line in enumerate(dialogue):
+        text = line.get("text", "")
+        if ASCII_LETTER_RE.search(text):
+            targets.append({"index": idx, "text": text})
+
+    if not targets:
+        return dialogue
+
+    system_prompt = """
+あなたは日本語の編集者です。
+以下の台詞に含まれる英語・英字略語を、必ず日本語に言い換え、原文英語は丸括弧で後置してください。
+英語だけの文は禁止です。意味は変えず、情報を追加しないでください。
+略語はカタカナ読み＋英字を括弧で併記してください（例: イーイージー（EEG））。
+"""
+
+    user_prompt = """次の台詞をルールに沿って書き換えてください。
+JSON配列で返し、各要素は {"index": 数字, "text": "修正後の台詞"} の形式にしてください。
+並び順は入力と同じにしてください。
+
+対象台詞:
+{payload}
+""".format(payload=json.dumps(targets, ensure_ascii=False))
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {API_KEY}"
+    }
+
+    model = resolve_model()
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        "temperature": 0.2,
+        "max_tokens": 1500,
+        "stream": False
+    }
+
+    try:
+        response = requests.post(LM_STUDIO_URL, headers=headers, json=payload, timeout=300)
+        response.raise_for_status()
+        result = response.json()
+        content = result['choices'][0]['message']['content']
+        content = content.replace("```json", "").replace("```", "").strip()
+        start_idx = content.find('[')
+        end_idx = content.rfind(']')
+        if start_idx != -1 and end_idx != -1:
+            content = content[start_idx:end_idx + 1]
+        rewritten = json.loads(content)
+        if isinstance(rewritten, list):
+            for item in rewritten:
+                idx = item.get("index")
+                text = item.get("text")
+                if isinstance(idx, int) and 0 <= idx < len(dialogue) and isinstance(text, str):
+                    dialogue[idx]["text"] = normalize_dialogue_text(text)
+    except Exception as e:
+        print(f"Warning: Failed to rewrite English dialogue: {e}")
+
+    return dialogue
+
+
 def format_date_jp(date_str):
     try:
         year, month, day = date_str.split("-")
@@ -84,6 +226,9 @@ def generate_paper_script(papers, date_str=None):
     Returns:
         dict: 台本データ（title, dialogue, references）
     """
+    if not ensure_lm_studio_ready():
+        print("LM Studio is not available. Script generation aborted.")
+        return None
     if date_str is None:
         from datetime import datetime
         date_str = datetime.now().strftime("%Y-%m-%d")
@@ -123,15 +268,17 @@ DOI: {doi}
 - です・ます調で自然に話す
 - スラッシュや括弧で敬語を省略しない
 
-【読み上げやすさ】
-- 英字略語や英単語は原則カタカナ表記に置き換える（例: EEG→イーイージー、Transformer→トランスフォーマー）
-- アルファベット表記が避けられない固有名詞は、本文ではカタカナ読みのみを使う
-- 記号や英単語は必要に応じて読みやすく言い換える
+【英語処理ルール】
+- 英語は必ず日本語に言い換え、原文英語は丸括弧で後置する（例: 畳み込みニューラルネットワーク（Convolutional Neural Network））
+- 英字略語はカタカナ読み＋英字を括弧で併記（例: イーイージー（EEG）、ブレイン・コンピューター・インターフェース（BCI））
+- 英語だけの文は禁止
+- 日本語訳が難しい場合は、カタカナ読み＋括弧英語にする
 
 【表記ルール】
 - 日本語は通常の表記（漢字・ひらがな・カタカナ）で、ひらがなの分かち書きはしない
 - 不要な空白を入れない
 - 日付は「YYYY年M月D日」形式を使う
+ - 1セリフは最大{DIALOGUE_MAX_CHARS}文字程度に収める
 
 【重要】出力は必ず以下のJSONフォーマットのみにしてください。
 Markdownのコードブロック(```json)や、冒頭・末尾の挨拶、解説は一切不要です。
@@ -227,7 +374,8 @@ Format:
                     text = normalize_dialogue_text(line.get("text", ""))
                     if text:
                         cleaned_dialogue.append({"speaker": speaker, "text": text})
-                script_data["dialogue"] = cleaned_dialogue
+                rewritten_dialogue = rewrite_english_dialogue(cleaned_dialogue)
+                script_data["dialogue"] = split_dialogue_lines(rewritten_dialogue, DIALOGUE_MAX_CHARS)
 
             # 参考文献情報を追加
             script_data['references'] = []

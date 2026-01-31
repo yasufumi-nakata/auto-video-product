@@ -7,7 +7,7 @@ import requests
 import feedparser
 import urllib.parse
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -220,7 +220,22 @@ def fetch_elsevier(query, count=10, days_back=1):
     return papers
 
 
-def fetch_papers(query=None, max_results=5, days_back=1):
+def normalize_target_date(target_date):
+    if target_date is None:
+        return None
+    if isinstance(target_date, date):
+        return target_date
+    if isinstance(target_date, datetime):
+        return target_date.date()
+    if isinstance(target_date, str):
+        try:
+            return datetime.strptime(target_date, "%Y-%m-%d").date()
+        except ValueError:
+            return None
+    return None
+
+
+def fetch_papers(query=None, max_results=5, days_back=1, target_date=None):
     """
     arXivとScopusから論文を取得してマージ
 
@@ -228,11 +243,13 @@ def fetch_papers(query=None, max_results=5, days_back=1):
         query: 検索クエリ（Noneの場合は環境変数から取得）
         max_results: 各ソースからの最大取得件数（None or 0で上限なし）
         days_back: 何日前までの論文を取得するか（1=前日のみ）
+        target_date: 対象日（YYYY-MM-DD 文字列または date）。指定時は対象日に絞り込む
     """
     if query is None:
         query = SEARCH_QUERY
 
     print(f"Fetching papers for: {query} (days_back={days_back})")
+    target_date = normalize_target_date(target_date)
 
     papers = []
 
@@ -245,6 +262,14 @@ def fetch_papers(query=None, max_results=5, days_back=1):
     scopus_papers = fetch_elsevier(query, count=max_results, days_back=days_back)
     print(f"Scopus: {len(scopus_papers)} papers")
     papers.extend(scopus_papers)
+
+    if target_date:
+        before_count = len(papers)
+        papers = [
+            p for p in papers
+            if p.get("pub_date_obj") and p["pub_date_obj"].date() == target_date
+        ]
+        print(f"Filtered papers by target_date={target_date}: {len(papers)}/{before_count}")
 
     # 日付でソート（新しい順）
     papers.sort(key=lambda x: x['pub_date_obj'], reverse=True)

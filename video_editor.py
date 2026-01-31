@@ -54,11 +54,101 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
     # サイズを1280x720に設定（YouTube推奨）
     image_clip = ImageClip(image_path).with_duration(duration).resized((1280, 720))
 
+import unicodedata
+
+def find_japanese_font():
+    """
+    Finds the best available Japanese font on macOS.
+    Prefers Hiragino Sans W6 (Bold) for readability.
+    """
+    font_dirs = ["/System/Library/Fonts", "/Library/Fonts"]
+    # Targets in priority order (NFC normalized names)
+    targets = [
+        "ヒラギノ角ゴシック W6.ttc",
+        "Hiragino Sans W6.ttc",
+        "Hiragino Sans GB.ttc",
+        "Arial Unicode.ttf"
+    ]
+    
+    for font_dir in font_dirs:
+        if not os.path.exists(font_dir):
+            continue
+            
+        # Get list of files and try to match
+        try:
+            files = os.listdir(font_dir)
+            for filename in files:
+                # Normalize filename to NFC for comparison
+                norm_name = unicodedata.normalize('NFC', filename)
+                
+                # Check against targets
+                for target in targets:
+                    if norm_name.startswith(target) or norm_name == target:
+                        return os.path.join(font_dir, filename)
+        except Exception:
+            continue
+            
+    # Fallback to a hardcoded path that often works or system default
+    return '/System/Library/Fonts/Hiragino Sans GB.ttc'
+
+def create_podcast_video(image_path, audio_folder, output_filename="final_video.mp4", script_file=None):
+    """
+    指定された画像と、音声フォルダ内の全てのwavファイルを結合して動画を作成する。
+    script_fileが指定されている場合は字幕を追加する。
+    """
+    print(f"Creating video from {image_path} and audio in {audio_folder}...")
+
+    # 音声ファイルの取得とソート (000_...wav, 001_...wav の順)
+    audio_files = sorted(glob.glob(os.path.join(audio_folder, "*.wav")))
+
+    if not audio_files:
+        print("No audio files found!")
+        return None
+
+    # 字幕情報を読み込み
+    subtitles = []
+    show_speaker = False
+    if script_file and os.path.exists(script_file):
+        with open(script_file, "r", encoding="utf-8") as f:
+            script_data = json.load(f)
+            dialogues = script_data.get("dialogue", [])
+            for i, d in enumerate(dialogues):
+                subtitles.append({
+                    "index": i,
+                    "speaker": d["speaker"],
+                    "text": d["text"]
+                })
+        unique_speakers = {sub.get("speaker") for sub in subtitles if sub.get("speaker")}
+        show_speaker = len(unique_speakers) > 1
+
+    # 音声クリップを作成し、各クリップの開始時刻を記録
+    audio_clips = []
+    clip_times = []  # (start_time, duration, index)
+    current_time = 0.0
+
+    for i, wav in enumerate(audio_files):
+        clip = AudioFileClip(wav)
+        audio_clips.append(clip)
+        clip_times.append((current_time, clip.duration, i))
+        current_time += clip.duration
+
+    # 音声を結合
+    final_audio = concatenate_audioclips(audio_clips)
+    duration = final_audio.duration
+
+    # 画像クリップを作成（音声と同じ長さにする）
+    # サイズを1280x720に設定（YouTube推奨）
+    image_clip = ImageClip(image_path).with_duration(duration).resized((1280, 720))
+
     # 字幕クリップを作成
     text_clips = []
 
-    if subtitles and len(clip_times) == len(subtitles):
-        print(f"Adding {len(subtitles)} subtitles...")
+    # 字幕と音声の数が合わない場合でも、可能な限り表示する
+    if subtitles:
+        print(f"Adding subtitles (Audio: {len(clip_times)}, Script: {len(subtitles)})...")
+        
+        font_path = find_japanese_font()
+        print(f"Using font: {font_path}")
 
         for start_time, clip_duration, idx in clip_times:
             if idx < len(subtitles):
@@ -75,8 +165,6 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
 
                 try:
                     # 字幕テキストクリップを作成
-                    # macOS日本語フォントのパスを直接指定
-                    font_path = '/System/Library/Fonts/Hiragino Sans GB.ttc'
                     txt_clip = TextClip(
                         text=display_text,
                         font_size=36,
@@ -97,9 +185,9 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
                     text_clips.append(txt_clip)
                 except Exception as e:
                     print(f"Warning: Could not create subtitle {idx}: {e}")
-    else:
-        if subtitles:
-            print(f"Warning: Subtitle count ({len(subtitles)}) != audio file count ({len(clip_times)})")
+                    
+    if subtitles and len(subtitles) != len(clip_times):
+        print(f"Warning: Subtitle count ({len(subtitles)}) != audio file count ({len(clip_times)}). Some mismatch may occur.")
 
     # 動画を合成
     if text_clips:

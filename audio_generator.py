@@ -3,6 +3,8 @@ import json
 import requests
 import time
 import re
+import subprocess
+import platform
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +15,11 @@ try:
     DEFAULT_SPEAKER_ID = int(os.getenv("VOICEVOX_SPEAKER_ID", "3"))
 except ValueError:
     DEFAULT_SPEAKER_ID = 3
+
+VOICEVOX_AUTO_START = os.getenv("VOICEVOX_AUTO_START", "1") != "0"
+VOICEVOX_STARTUP_TIMEOUT = float(os.getenv("VOICEVOX_STARTUP_TIMEOUT", "20"))
+VOICEVOX_STARTUP_POLL = float(os.getenv("VOICEVOX_STARTUP_POLL", "0.5"))
+VOICEVOX_APP_NAME = os.getenv("VOICEVOX_APP_NAME", "VOICEVOX")
 
 # 話者ID定義
 # VOICEVOXアプリのバージョンや設定によりますが、標準的なIDを使用します。
@@ -64,6 +71,49 @@ HONORIFIC_SPLIT_PATTERN = re.compile(
 )
 
 SPEAKER_ID_CACHE = None
+VOICEVOX_READY_CACHE = None
+
+def voicevox_is_ready():
+    try:
+        res = requests.get(f"{VOICEVOX_URL}/version", timeout=2)
+        return res.status_code == 200
+    except Exception:
+        return False
+
+def attempt_start_voicevox():
+    if not VOICEVOX_AUTO_START:
+        return False
+    if platform.system() == "Darwin":
+        try:
+            subprocess.run(["open", "-a", VOICEVOX_APP_NAME], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return True
+        except Exception:
+            return False
+    return False
+
+def ensure_voicevox_ready():
+    global VOICEVOX_READY_CACHE
+    if VOICEVOX_READY_CACHE:
+        return True
+    if voicevox_is_ready():
+        VOICEVOX_READY_CACHE = True
+        return True
+    if not VOICEVOX_AUTO_START:
+        print("VOICEVOX is not reachable and auto-start is disabled.")
+        return False
+    if attempt_start_voicevox():
+        print("VOICEVOX is not running. Attempting to launch VOICEVOX...")
+        deadline = time.time() + VOICEVOX_STARTUP_TIMEOUT
+        while time.time() < deadline:
+            if voicevox_is_ready():
+                VOICEVOX_READY_CACHE = True
+                print("VOICEVOX is now available.")
+                return True
+            time.sleep(VOICEVOX_STARTUP_POLL)
+        print("VOICEVOX did not start within the timeout.")
+        return False
+    print("VOICEVOX is not reachable and could not be started automatically.")
+    return False
 
 def normalize_tts_text(text):
     normalized = text
@@ -173,6 +223,10 @@ def process_script(script_file="script.json", output_dir="output_audio"):
     if not os.path.exists(script_file):
         print(f"Script file {script_file} not found.")
         return
+
+    if not ensure_voicevox_ready():
+        print("VOICEVOX is not available. Audio generation aborted.")
+        return []
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

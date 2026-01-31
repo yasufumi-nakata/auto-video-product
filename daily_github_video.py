@@ -8,6 +8,7 @@ import os
 import shutil
 import argparse
 import json
+import sys
 from datetime import timedelta
 from dotenv import load_dotenv
 
@@ -248,8 +249,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.tomorrow:
-        run_once_tomorrow(test_mode=args.test, repo=args.repo)
+        success = bool(run_once_tomorrow(test_mode=args.test, repo=args.repo))
+        sys.exit(0 if success else 1)
     elif args.once:
-        run_once(test_mode=args.test, days_back=args.days, repo=args.repo)
+        success = bool(run_once(test_mode=args.test, days_back=args.days, repo=args.repo))
+        sys.exit(0 if success else 1)
     else:
         run_service(test_mode=args.test, repo=args.repo)

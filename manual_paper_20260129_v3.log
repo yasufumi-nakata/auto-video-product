@@ -1,0 +1,24 @@
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/site-packages/google/api_core/_python_version_support.py:246: FutureWarning: You are using a non-supported Python version (3.9.12). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.10, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+
+==================================================
+=== Paper Video Generation for: 2026-01-29 (Manual Override) ===
+
+=== Phase 1: Fetching Papers for 2026-01-29 ===
+Fetching papers for: EEG OR "brain waves" OR "brain-computer interface" (days_back=2)
+arXiv: 5 papers
+Scopus: 1 papers
+Filtered papers by target_date=2026-01-29: 5/6
+Total papers: 5
+
+=== Phase 2: Generating Script ===
+Generating paper review script for 5 papers...
+Attempt 1/3...
+Error communicating with LM Studio: '"index"'
+Retrying...
+Attempt 2/3...
+Error communicating with LM Studio: '"index"'
+Retrying...
+Attempt 3/3...
+Error communicating with LM Studio: '"index"'
+Failed to generate script.

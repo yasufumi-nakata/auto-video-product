@@ -7,6 +7,7 @@ import requests
 import json
 import re
 from dotenv import load_dotenv
+from lm_studio_utils import ensure_lm_studio_ready
 
 load_dotenv()
 
@@ -153,6 +154,9 @@ def generate_github_script(activities, date_str=None):
     Returns:
         dict: 台本データ（title, dialogue, references）
     """
+    if not ensure_lm_studio_ready():
+        print("LM Studio is not available. Script generation aborted.")
+        return None
     if date_str is None:
         from datetime import datetime
         date_str = datetime.now().strftime("%Y-%m-%d")

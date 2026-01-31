@@ -1,0 +1,21 @@
+
+==================================================
+=== Paper Video Generation for: 2026-01-27 ===
+
+=== Phase 1: Fetching Papers for 2026-01-27 ===
+Fetching papers for: EEG OR "brain waves" OR "brain-computer interface" (days_back=1)
+arXiv: 17 papers
+Scopus: 1 papers
+Total papers: 18
+
+=== Phase 2: Generating Script ===
+Generating paper review script for 18 papers...
+Attempt 1/3...
+Error communicating with LM Studio: HTTPConnectionPool(host='localhost', port=1234): Read timed out. (read timeout=600)
+Retrying...
+Attempt 2/3...
+Error: LM Studio response was not valid JSON.
+Retrying...
+Attempt 3/3...
+Error communicating with LM Studio: HTTPConnectionPool(host='localhost', port=1234): Read timed out. (read timeout=600)
+Failed to generate script.

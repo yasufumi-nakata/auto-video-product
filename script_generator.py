@@ -3,6 +3,7 @@ import requests
 import json
 import re
 from dotenv import load_dotenv
+from lm_studio_utils import ensure_lm_studio_ready
 
 load_dotenv()
 
@@ -53,6 +54,9 @@ def generate_script(topic_text):
     """
     ニュースや記事のテキストを受け取り、Podcast風の台本（JSON形式）を生成する。
     """
+    if not ensure_lm_studio_ready():
+        print("LM Studio is not available. Script generation aborted.")
+        return None
     
     system_prompt = f"""
     あなたは人気Podcastの構成作家です。

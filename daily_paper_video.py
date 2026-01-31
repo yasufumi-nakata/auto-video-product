@@ -70,12 +70,26 @@ def wait_until_target_time(target_hour, target_minute, force_next_day=False):
 
     return wait_seconds
 
+def normalize_target_date(target_date):
+    if not target_date:
+        return None
+    if isinstance(target_date, datetime.date):
+        return target_date
+    if isinstance(target_date, str):
+        try:
+            return datetime.datetime.strptime(target_date, "%Y-%m-%d").date()
+        except ValueError:
+            return None
+    return None
+
+
 def generate_daily_video(test_mode=False, max_papers=None, target_date=None):
     """
     Main workflow for daily video generation.
     """
     print(f"\n==================================================")
 
+    target_date = normalize_target_date(target_date)
     if target_date:
         today = target_date
         print(f"=== Paper Video Generation for: {today} (Manual Override) ===")
@@ -87,7 +101,13 @@ def generate_daily_video(test_mode=False, max_papers=None, target_date=None):
     print(f"\n=== Phase 1: Fetching Papers for {today} ===")
 
     max_results = max_papers if max_papers and max_papers > 0 else None
-    all_papers = fetch_papers(max_results=max_results, days_back=1)
+    days_back = 1
+    if target_date:
+        days_back = (datetime.date.today() - target_date).days
+        if days_back < 0:
+            print("Target date is in the future. Aborting.")
+            return
+    all_papers = fetch_papers(max_results=max_results, days_back=days_back, target_date=today)
     if max_papers and max_papers > 0 and len(all_papers) > max_papers:
         all_papers = all_papers[:max_papers]
 
@@ -99,7 +119,7 @@ def generate_daily_video(test_mode=False, max_papers=None, target_date=None):
 
     # 4. Generate Script
     print("\n=== Phase 2: Generating Script ===")
-    script_data = generate_paper_script(all_papers)
+    script_data = generate_paper_script(all_papers, date_str=str(today))
     if not script_data:
         print("Failed to generate script.")
         return
@@ -187,9 +207,9 @@ def run_service(test_mode=False):
             print(f"Error during daily generation: {e}")
         time.sleep(60)
 
-def run_once(test_mode=False, max_papers=None):
+def run_once(test_mode=False, max_papers=None, target_date=None):
     cleanup_temp_files()
-    return generate_daily_video(test_mode=test_mode, max_papers=max_papers)
+    return generate_daily_video(test_mode=test_mode, max_papers=max_papers, target_date=target_date)
 
 def run_once_tomorrow(test_mode=False, max_papers=None):
     wait_seconds = wait_until_target_time(TARGET_HOUR, TARGET_MINUTE, force_next_day=True)
@@ -203,12 +223,15 @@ if __name__ == "__main__":
     parser.add_argument("--once", action="store_true", help="Run once immediately and exit")
     parser.add_argument("--tomorrow", action="store_true", help="Run once at the next 10:00 (tomorrow) and exit")
     parser.add_argument("--papers", type=int, help="Max number of papers to process (for testing)")
+    parser.add_argument("--date", type=str, help="Target date in YYYY-MM-DD (manual generation)")
 
     args = parser.parse_args()
 
     if args.tomorrow:
-        run_once_tomorrow(test_mode=args.test, max_papers=args.papers)
+        success = bool(run_once_tomorrow(test_mode=args.test, max_papers=args.papers))
+        sys.exit(0 if success else 1)
     elif args.once:
-        run_once(test_mode=args.test, max_papers=args.papers)
+        success = bool(run_once(test_mode=args.test, max_papers=args.papers, target_date=args.date))
+        sys.exit(0 if success else 1)
     else:
         run_service(test_mode=args.test)

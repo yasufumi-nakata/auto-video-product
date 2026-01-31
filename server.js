@@ -41,6 +41,20 @@ const tasks = {
       SKIP_DIFFUSERS: process.env.GITHUB_SKIP_DIFFUSERS || process.env.SKIP_DIFFUSERS || "1",
     },
   },
+  bsd_14: {
+    label: "bsd_14",
+    script: "daily_bsd_video.py",
+    schedule: { hour: 14, minute: 0 },
+    args: ["--once"],
+    env: {},
+  },
+  bsd_17: {
+    label: "bsd_17",
+    script: "daily_bsd_video.py",
+    schedule: { hour: 17, minute: 0 },
+    args: ["--once"],
+    env: {},
+  },
 };
 
 if (process.env.PAPER_TEST_MODE === "1") {
