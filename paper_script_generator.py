@@ -159,13 +159,14 @@ def rewrite_english_dialogue(dialogue):
 略語はカタカナ読み＋英字を括弧で併記してください（例: イーイージー（EEG））。
 """
 
-    user_prompt = """次の台詞をルールに沿って書き換えてください。
-JSON配列で返し、各要素は {"index": 数字, "text": "修正後の台詞"} の形式にしてください。
+    payload_json = json.dumps(targets, ensure_ascii=False)
+    user_prompt = f"""次の台詞をルールに沿って書き換えてください。
+JSON配列で返し、各要素は {{"index": 数字, "text": "修正後の台詞"}} の形式にしてください。
 並び順は入力と同じにしてください。
 
 対象台詞:
-{payload}
-""".format(payload=json.dumps(targets, ensure_ascii=False))
+{payload_json}
+"""
 
     headers = {
         "Content-Type": "application/json",
