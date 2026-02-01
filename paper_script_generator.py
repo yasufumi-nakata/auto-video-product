@@ -15,7 +15,11 @@ LM_STUDIO_URL = os.getenv("LM_STUDIO_BASE_URL", "http://localhost:1234/v1") + "/
 API_KEY = os.getenv("LM_STUDIO_API_KEY", "lm-studio")
 DEFAULT_MODEL = "openai/gpt-oss-20b"
 SUMMARY_MAX_CHARS = int(os.getenv("PAPER_SUMMARY_MAX_CHARS", "1200"))
-DIALOGUE_MAX_CHARS = int(os.getenv("PAPER_DIALOGUE_MAX_CHARS", "900"))
+DIALOGUE_MAX_CHARS = int(os.getenv("PAPER_DIALOGUE_MAX_CHARS", "420"))
+LM_STUDIO_TIMEOUT = int(os.getenv("LM_STUDIO_TIMEOUT", "240"))
+LM_STUDIO_REWRITE_TIMEOUT = int(os.getenv("LM_STUDIO_REWRITE_TIMEOUT", "180"))
+LM_STUDIO_REWRITE_BATCH_SIZE = int(os.getenv("LM_STUDIO_REWRITE_BATCH_SIZE", "5"))
+LM_STUDIO_MAX_TOKENS = int(os.getenv("LM_STUDIO_MAX_TOKENS", "3200"))
 DEFAULT_SPEAKER_NAME = os.getenv("VOICEVOX_SPEAKER_NAME", "青山龍星")
 CJK_RANGE = r"\u3040-\u30ff\u3400-\u9fff"
 SPACE_BETWEEN_CJK = re.compile(rf"(?<=[{CJK_RANGE}0-9])\s+(?=[{CJK_RANGE}0-9])")
@@ -24,6 +28,41 @@ SPACE_BETWEEN_ASCII_CJK = re.compile(rf"(?<=[A-Za-z0-9])\s+(?=[{CJK_RANGE}])")
 SENTENCE_SPLIT_RE = re.compile(r"(?<=[。！？!?])")
 SOFT_BREAK_CHARS = ["、", "，", ",", "・", "／", "/", " ", "　", "；", ";", ":", "："]
 ASCII_LETTER_RE = re.compile(r"[A-Za-z]")
+SKIP_TAG_RE = re.compile(r"<skip>.*?</skip>", flags=re.DOTALL)
+ENGLISH_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9+\\-./]*")
+
+ABBREVIATION_READINGS = [
+    ("fMRI", "エフエムアールアイ"),
+    ("sEEG", "エスイーイージー"),
+    ("iEEG", "アイイーイージー"),
+    ("EEG", "イーイージー"),
+    ("MEG", "エムイージー"),
+    ("EMG", "イーエムジー"),
+    ("ECG", "イーシージー"),
+    ("ERP", "イーアールピー"),
+    ("MRI", "エムアールアイ"),
+    ("PET", "ピーイーティー"),
+    ("BCI", "ビーシーアイ"),
+    ("CNN", "シーエヌエヌ"),
+    ("RNN", "アールエヌエヌ"),
+    ("GRU", "ジーアールユー"),
+    ("LSTM", "エルエスティーエム"),
+    ("SVM", "エスブイエム"),
+    ("AI", "エーアイ"),
+    ("ML", "エムエル"),
+    ("DL", "ディーエル"),
+    ("AR", "エーアール"),
+    ("VR", "ブイアール"),
+]
+
+ABBREVIATION_PATTERNS = [
+    (
+        re.compile(rf"(?<![A-Za-z0-9]){re.escape(abbr)}(?![A-Za-z0-9])"),
+        reading,
+        abbr,
+    )
+    for abbr, reading in ABBREVIATION_READINGS
+]
 
 
 def resolve_model():
@@ -68,6 +107,65 @@ def normalize_dialogue_text(text):
     normalized = re.sub(r"([「『（【])\s+", r"\1", normalized)
     normalized = re.sub(r"\s+([」』）】])", r"\1", normalized)
     return normalized
+
+
+def apply_abbreviation_readings(text):
+    normalized = text
+    for pattern, reading, abbr in ABBREVIATION_PATTERNS:
+        normalized = pattern.sub(f"{reading}（<skip>{abbr}</skip>）", normalized)
+    return normalized
+
+
+def replace_outside_skip(text, repl_func):
+    parts = []
+    last = 0
+    for match in SKIP_TAG_RE.finditer(text):
+        parts.append(repl_func(text[last:match.start()]))
+        parts.append(match.group(0))
+        last = match.end()
+    parts.append(repl_func(text[last:]))
+    return "".join(parts)
+
+
+def replace_outside_parentheses(text, repl_func):
+    parts = []
+    buf = ""
+    depth = 0
+    for ch in text:
+        if ch == "（":
+            if depth == 0:
+                parts.append(("outside", buf))
+                buf = ""
+            depth += 1
+            buf += ch
+        elif ch == "）":
+            if depth > 0:
+                depth -= 1
+            buf += ch
+            if depth == 0:
+                parts.append(("inside", buf))
+                buf = ""
+        else:
+            buf += ch
+    if buf:
+        parts.append(("outside" if depth == 0 else "inside", buf))
+
+    rebuilt = []
+    for kind, chunk in parts:
+        if kind == "outside":
+            rebuilt.append(repl_func(chunk))
+        else:
+            rebuilt.append(chunk)
+    return "".join(rebuilt)
+
+
+def fallback_wrap_english(text):
+    def repl(match):
+        token = match.group(0)
+        return f"英語表記（<skip>{token}</skip>）"
+    def apply_rules(segment):
+        return replace_outside_parentheses(segment, lambda s: ENGLISH_TOKEN_RE.sub(repl, s))
+    return replace_outside_skip(text, apply_rules)
 
 
 def split_long_text(text, max_chars):
@@ -146,7 +244,10 @@ def rewrite_english_dialogue(dialogue):
     targets = []
     for idx, line in enumerate(dialogue):
         text = line.get("text", "")
-        if ASCII_LETTER_RE.search(text):
+        text = apply_abbreviation_readings(text)
+        dialogue[idx]["text"] = text
+        text_no_skip = SKIP_TAG_RE.sub("", text)
+        if ASCII_LETTER_RE.search(text_no_skip):
             targets.append({"index": idx, "text": text})
 
     if not targets:
@@ -154,13 +255,23 @@ def rewrite_english_dialogue(dialogue):
 
     system_prompt = """
 あなたは日本語の編集者です。
-以下の台詞に含まれる英語・英字略語を、必ず日本語に言い換え、原文英語は丸括弧で後置してください。
+以下の台詞に含まれる英語・英字略語を、必ず日本語に言い換え、原文英語は <skip>English</skip> で後置してください。
+表示上は括弧書きにしたい場合、例のようにします: 〇〇（<skip>Original English</skip>）
 英語だけの文は禁止です。意味は変えず、情報を追加しないでください。
-略語はカタカナ読み＋英字を括弧で併記してください（例: イーイージー（EEG））。
+略語はカタカナ読み＋英字を <skip> </skip> で併記してください（例: イーイージー（<skip>EEG</skip>））。
 """
 
-    payload_json = json.dumps(targets, ensure_ascii=False)
-    user_prompt = f"""次の台詞をルールに沿って書き換えてください。
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {API_KEY}"
+    }
+    model = resolve_model()
+
+    batch_size = max(1, LM_STUDIO_REWRITE_BATCH_SIZE)
+    for start in range(0, len(targets), batch_size):
+        batch = targets[start:start + batch_size]
+        payload_json = json.dumps(batch, ensure_ascii=False)
+        user_prompt = f"""次の台詞をルールに沿って書き換えてください。
 JSON配列で返し、各要素は {{"index": 数字, "text": "修正後の台詞"}} の形式にしてください。
 並び順は入力と同じにしてください。
 
@@ -168,42 +279,41 @@ JSON配列で返し、各要素は {{"index": 数字, "text": "修正後の台�
 {payload_json}
 """
 
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}"
-    }
+        payload = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            "temperature": 0.2,
+            "max_tokens": 1200,
+            "stream": False
+        }
 
-    model = resolve_model()
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ],
-        "temperature": 0.2,
-        "max_tokens": 1500,
-        "stream": False
-    }
-
-    try:
-        response = requests.post(LM_STUDIO_URL, headers=headers, json=payload, timeout=300)
-        response.raise_for_status()
-        result = response.json()
-        content = result['choices'][0]['message']['content']
-        content = content.replace("```json", "").replace("```", "").strip()
-        start_idx = content.find('[')
-        end_idx = content.rfind(']')
-        if start_idx != -1 and end_idx != -1:
-            content = content[start_idx:end_idx + 1]
-        rewritten = json.loads(content)
-        if isinstance(rewritten, list):
-            for item in rewritten:
-                idx = item.get("index")
-                text = item.get("text")
-                if isinstance(idx, int) and 0 <= idx < len(dialogue) and isinstance(text, str):
-                    dialogue[idx]["text"] = normalize_dialogue_text(text)
-    except Exception as e:
-        print(f"Warning: Failed to rewrite English dialogue: {e}")
+        try:
+            response = requests.post(
+                LM_STUDIO_URL,
+                headers=headers,
+                json=payload,
+                timeout=LM_STUDIO_REWRITE_TIMEOUT
+            )
+            response.raise_for_status()
+            result = response.json()
+            content = result['choices'][0]['message']['content']
+            content = content.replace("```json", "").replace("```", "").strip()
+            start_idx = content.find('[')
+            end_idx = content.rfind(']')
+            if start_idx != -1 and end_idx != -1:
+                content = content[start_idx:end_idx + 1]
+            rewritten = json.loads(content)
+            if isinstance(rewritten, list):
+                for item in rewritten:
+                    idx = item.get("index")
+                    text = item.get("text")
+                    if isinstance(idx, int) and 0 <= idx < len(dialogue) and isinstance(text, str):
+                        dialogue[idx]["text"] = normalize_dialogue_text(text)
+        except Exception as e:
+            print(f"Warning: Failed to rewrite English dialogue batch: {e}")
 
     return dialogue
 
@@ -270,10 +380,11 @@ DOI: {doi}
 - スラッシュや括弧で敬語を省略しない
 
 【英語処理ルール】
-- 英語は必ず日本語に言い換え、原文英語は丸括弧で後置する（例: 畳み込みニューラルネットワーク（Convolutional Neural Network））
-- 英字略語はカタカナ読み＋英字を括弧で併記（例: イーイージー（EEG）、ブレイン・コンピューター・インターフェース（BCI））
+- 英語は必ず日本語に言い換え、原文英語は <skip>English</skip> として後置する
+- 表示上は括弧書きにしたい場合、例のようにする: 畳み込みニューラルネットワーク（<skip>Convolutional Neural Network</skip>）
+- 英字略語はカタカナ読み＋英字を <skip> </skip> で併記する（例: イーイージー（<skip>EEG</skip>））
 - 英語だけの文は禁止
-- 日本語訳が難しい場合は、カタカナ読み＋括弧英語にする
+- 日本語訳が難しい場合は、カタカナ読み＋<skip>英語</skip>にする
 
 【表記ルール】
 - 日本語は通常の表記（漢字・ひらがな・カタカナ）で、ひらがなの分かち書きはしない
@@ -334,6 +445,7 @@ Format:
     }
 
     model = resolve_model()
+    max_tokens = min(LM_STUDIO_MAX_TOKENS, 800 + (len(papers) * 250))
     payload = {
         "model": model,
         "messages": [
@@ -341,7 +453,7 @@ Format:
             {"role": "user", "content": user_prompt}
         ],
         "temperature": 0.5,
-        "max_tokens": 4000,
+        "max_tokens": max_tokens,
         "stream": False
     }
 
@@ -351,7 +463,7 @@ Format:
     for attempt in range(max_retries):
         try:
             print(f"Attempt {attempt + 1}/{max_retries}...")
-            response = requests.post(LM_STUDIO_URL, headers=headers, json=payload, timeout=600)
+            response = requests.post(LM_STUDIO_URL, headers=headers, json=payload, timeout=LM_STUDIO_TIMEOUT)
             response.raise_for_status()
 
             result = response.json()
@@ -376,6 +488,11 @@ Format:
                     if text:
                         cleaned_dialogue.append({"speaker": speaker, "text": text})
                 rewritten_dialogue = rewrite_english_dialogue(cleaned_dialogue)
+                for line in rewritten_dialogue:
+                    text = line.get("text", "")
+                    text_no_skip = SKIP_TAG_RE.sub("", text)
+                    if ASCII_LETTER_RE.search(text_no_skip):
+                        line["text"] = normalize_dialogue_text(fallback_wrap_english(text))
                 script_data["dialogue"] = split_dialogue_lines(rewritten_dialogue, DIALOGUE_MAX_CHARS)
 
             # 参考文献情報を追加

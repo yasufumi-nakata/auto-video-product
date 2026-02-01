@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/Users/yasufumi/Documents/GitHub/auto-video-product/daily_paper_video.py", line 18, in <module>
+    from paper_script_generator import generate_paper_script
+  File "/Users/yasufumi/Documents/GitHub/auto-video-product/paper_script_generator.py", line 31, in <module>
+    ENGLISH_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9+\\-./]*")
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/re.py", line 252, in compile
+    return _compile(pattern, flags)
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/re.py", line 304, in _compile
+    p = sre_compile.compile(pattern, flags)
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/sre_compile.py", line 764, in compile
+    p = sre_parse.parse(p, flags)
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/sre_parse.py", line 950, in parse
+    p = _parse_sub(source, state, flags & SRE_FLAG_VERBOSE, 0)
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/sre_parse.py", line 443, in _parse_sub
+    itemsappend(_parse(source, state, verbose, nested + 1,
+  File "/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/sre_parse.py", line 598, in _parse
+    raise source.error(msg, len(this) + 1 + len(that))
+re.error: bad character range \\-. at position 19

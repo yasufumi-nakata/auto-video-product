@@ -66,6 +66,9 @@ ABBREVIATION_PATTERNS = [
     for abbr, reading in ABBREVIATION_READINGS
 ]
 
+TTS_SKIP_PATTERN = re.compile(r"<skip>.*?</skip>", flags=re.DOTALL)
+TTS_SKIP_PAREN_PATTERN = re.compile(r"[（(]\s*<skip>.*?</skip>\s*[)）]", flags=re.DOTALL)
+
 HONORIFIC_SPLIT_PATTERN = re.compile(
     r"(です|ます|ございます|いたします|ください|下さい)[/／・](です|ます|ございます|いたします|ください|下さい)"
 )
@@ -117,6 +120,9 @@ def ensure_voicevox_ready():
 
 def normalize_tts_text(text):
     normalized = text
+    normalized = TTS_SKIP_PAREN_PATTERN.sub("", normalized)
+    normalized = TTS_SKIP_PATTERN.sub("", normalized)
+    normalized = re.sub(r"[（(]\s*[)）]", "", normalized)
     normalized = HONORIFIC_SPLIT_PATTERN.sub(r"\1、\2", normalized)
     for pattern, reading in ABBREVIATION_PATTERNS:
         normalized = pattern.sub(reading, normalized)

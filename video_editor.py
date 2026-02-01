@@ -154,7 +154,7 @@ def create_podcast_video(image_path, audio_folder, output_filename="final_video.
             if idx < len(subtitles):
                 sub = subtitles[idx]
                 speaker = sub["speaker"]
-                text = sub["text"]
+                text = strip_skip_tags(sub["text"])
 
                 # 長いテキストは改行
                 wrapped_text = wrap_text(text, max_chars=30)
@@ -230,6 +230,12 @@ def wrap_text(text, max_chars=30):
         lines.append(current_line)
 
     return "\n".join(lines)
+
+
+def strip_skip_tags(text):
+    if not text:
+        return text
+    return re.sub(r"<skip>(.*?)</skip>", r"\1", text, flags=re.DOTALL)
 
 
 def create_video_with_subtitles(image_path, audio_folder, script_file, output_filename="final_video.mp4"):
